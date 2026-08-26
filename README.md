@@ -2,11 +2,11 @@
 
 ## 1. Descripción del proyecto
 
-**Agenda Personal** será una aplicación móvil para Android orientada a la organización de actividades y compromisos personales y académicos. La aplicación tendrá como elemento principal una vista de calendario mensual desde la cual el usuario podrá consultar las actividades programadas y registrar nuevas tareas, reuniones, eventos u otros compromisos.
+**Agenda Personal** será una aplicación móvil para Android orientada a la organización de actividades y compromisos personales y académicos. La aplicación tendrá como elemento principal una vista de calendario mensual desde la cual el usuario podrá consultar las actividades programadas y registrar nuevos recordatorios.
 
-Uno de los objetivos principales será facilitar el registro de actividades y permitir configurar recordatorios visuales y sonoros para ayudar al usuario a recordar sus compromisos en la fecha y hora establecidas.
+La idea principal es que registrar una actividad sea rápido y sencillo. Cuando el usuario seleccione un día del calendario, podrá crear una actividad para ese día indicando solamente qué necesita recordar y a qué hora. También existirá una opción para programar una actividad para una fecha diferente sin tener que desplazarse hasta ese día en el calendario.
 
-La propuesta inicial busca mantener una aplicación sencilla y práctica, pero con posibilidades de ampliación después de finalizar el proyecto académico.
+La aplicación generará un recordatorio visual y sonoro cuando llegue la hora programada. La propuesta inicial busca mantener una aplicación sencilla y práctica, pero con posibilidades de ampliación después de finalizar el proyecto académico.
 
 ## 2. Exposición del problema
 
@@ -22,9 +22,10 @@ Desarrollar una aplicación móvil para Android que facilite la organización de
 
 ### Objetivos específicos
 
-- Permitir registrar, editar y eliminar actividades.
-- Facilitar la consulta de las actividades mediante una vista de calendario mensual.
-- Permitir establecer una fecha y hora para cada actividad.
+- Permitir consultar las actividades mediante una vista de calendario mensual.
+- Permitir crear rápidamente una actividad indicando qué se necesita recordar y la hora correspondiente.
+- Permitir programar actividades para fechas diferentes a la que se está consultando.
+- Permitir editar, eliminar y marcar como completadas las actividades.
 - Incorporar recordatorios visuales y sonoros asociados a las actividades.
 - Mantener una primera versión sencilla y funcional que pueda ampliarse posteriormente.
 
@@ -41,26 +42,26 @@ Durante el desarrollo se estudiarán las herramientas y componentes necesarios p
 La aplicación estará diseñada principalmente para un usuario que necesita organizar sus actividades. Las principales pantallas consideradas inicialmente son:
 
 - **Calendario mensual:** permitirá visualizar los días del mes y las actividades programadas.
-- **Nueva actividad:** permitirá registrar el título, descripción, fecha, hora y opciones de recordatorio.
-- **Detalle de actividad:** permitirá consultar la información de una actividad, editarla, eliminarla o marcarla como completada.
-- **Configuración:** permitirá administrar algunas preferencias relacionadas con los recordatorios y el funcionamiento de la aplicación.
+- **Nueva actividad:** se abrirá al seleccionar un día y permitirá indicar qué se necesita recordar y a qué hora.
+- **Programar actividad:** permitirá crear una actividad para una fecha diferente a la que se está consultando, indicando la fecha, qué se necesita recordar y la hora.
+- **Detalle de actividad:** permitirá consultar una actividad, editarla, eliminarla o marcarla como completada.
 
 ### Interfaz de administración
 
-La primera versión del proyecto no contempla diferentes tipos de usuarios ni un perfil administrativo independiente, debido a que la aplicación está planteada como una herramienta de uso personal. Las opciones de configuración y gestión necesarias estarán disponibles directamente para el usuario.
+La primera versión del proyecto no contempla diferentes tipos de usuarios ni un perfil administrativo independiente, debido a que la aplicación está planteada como una herramienta de uso personal. Las opciones de gestión necesarias estarán disponibles directamente para el usuario.
 
 ## 6. Funcionalidad
 
 | Funcionalidad | Descripción |
 |---|---|
 | Calendario mensual | Permitir visualizar las actividades organizadas por fecha. |
-| Crear actividad | Registrar un nuevo compromiso o pendiente. |
+| Crear actividad | Registrar rápidamente un recordatorio para el día seleccionado. |
+| Programar actividad | Registrar un recordatorio para una fecha diferente a la que se está consultando. |
 | Editar actividad | Modificar la información de una actividad existente. |
 | Eliminar actividad | Eliminar actividades que ya no sean necesarias. |
 | Completar actividad | Marcar una actividad como realizada. |
-| Categorías | Permitir clasificar las actividades según su tipo. |
 | Fecha y hora | Establecer cuándo debe realizarse una actividad. |
-| Recordatorios | Programar una alerta asociada a una actividad. |
+| Recordatorio | Programar una alerta asociada a una actividad. |
 | Notificación | Mostrar una alerta visual y reproducir un sonido cuando corresponda. |
 
 ## 7. Diseño y wireframes
@@ -85,25 +86,44 @@ Los siguientes esquemas representan una propuesta inicial de las principales pan
 └─────────────────────────┘
 ```
 
-### Nueva actividad
+### Nueva actividad desde un día
 
 ```text
 ┌─────────────────────────┐
 │    Nueva actividad      │
 ├─────────────────────────┤
-│ Título                  │
+│ ¿Qué necesitas recordar?│
 │ [____________________]  │
 │                         │
-│ Descripción             │
-│ [____________________]  │
-│ [____________________]  │
+│ Hora                    │
+│ [      07:00 PM      ]  │
 │                         │
-│ Fecha   [__/__/____]    │
-│ Hora    [__:__]         │
-│                         │
-│ 🔔 Recordatorio   [ON]  │
+│ 🔔 Recordatorio: ON     │
 │                         │
 │       [ GUARDAR ]       │
+└─────────────────────────┘
+```
+
+En este caso, la fecha queda determinada automáticamente por el día seleccionado en el calendario.
+
+### Programar actividad para otra fecha
+
+```text
+┌─────────────────────────┐
+│   Programar actividad   │
+├─────────────────────────┤
+│ ¿Qué necesitas recordar?│
+│ [____________________]  │
+│                         │
+│ Fecha                   │
+│ [    15/09/2026      ]  │
+│                         │
+│ Hora                    │
+│ [      03:00 PM      ]  │
+│                         │
+│ 🔔 Recordatorio: ON     │
+│                         │
+│      [ PROGRAMAR ]      │
 └─────────────────────────┘
 ```
 
@@ -118,7 +138,7 @@ Los siguientes esquemas representan una propuesta inicial de las principales pan
 │ 28 de agosto            │
 │ 7:00 PM                 │
 │                         │
-│ Recordatorio: Activado  │
+│ 🔔 Recordatorio         │
 │                         │
 │ [ EDITAR ] [ ELIMINAR ] │
 │                         │
@@ -128,7 +148,7 @@ Los siguientes esquemas representan una propuesta inicial de las principales pan
 
 ## 8. Alcance inicial
 
-La primera versión del proyecto se enfocará en las funciones básicas de una agenda personal y en el funcionamiento de los recordatorios. Se priorizará que las funciones principales sean sencillas de utilizar y que la aplicación pueda funcionar correctamente en un dispositivo Android antes de incorporar características adicionales.
+La primera versión del proyecto se enfocará en las funciones básicas de una agenda personal y en el funcionamiento de los recordatorios. Se priorizará que registrar una actividad sea rápido y sencillo y que la aplicación pueda funcionar correctamente en un dispositivo Android antes de incorporar características adicionales.
 
 ## 9. Posibles mejoras futuras
 
