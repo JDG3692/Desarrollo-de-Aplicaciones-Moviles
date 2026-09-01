@@ -23,6 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.agendapersonal.ui.theme.AgendaPersonalTheme
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Checkbox
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,12 +44,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+class Tarea(
+    val texto: String
+) {
+    var completada by mutableStateOf(false)
+}
 @Composable
 fun Greeting( modifier: Modifier = Modifier) {
 
     var tareaAgregada by remember { mutableStateOf(false) }
     var textoTarea by remember { mutableStateOf("") }
-    val tareas = remember { mutableStateListOf<String>() }
+    val tareas = remember { mutableStateListOf<Tarea>() }
 
     Column(
         modifier = modifier
@@ -70,7 +78,7 @@ fun Greeting( modifier: Modifier = Modifier) {
         Button(
             onClick = {
                if((textoTarea.isNotBlank()))
-                   tareas.add(textoTarea)
+                   tareas.add(Tarea(textoTarea))
                     textoTarea = ""
                     tareaAgregada = true
             }
@@ -80,10 +88,21 @@ fun Greeting( modifier: Modifier = Modifier) {
         }
 
         tareas.forEach { tarea ->
-            Text(
-                text = "• $tarea",
+            Row(
                 modifier = Modifier.padding(8.dp)
-            )
+            ) {
+                Checkbox(
+                    checked = tarea.completada,
+                    onCheckedChange = { marcada ->
+                        tarea.completada = marcada
+                    }
+                )
+
+                Text(
+                    text = tarea.texto,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         }
     }
 }
