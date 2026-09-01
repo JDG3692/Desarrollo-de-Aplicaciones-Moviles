@@ -12,13 +12,49 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Mostrar estado actual
-Write-Host "[1/5] Estado actual del repositorio..." -ForegroundColor Yellow
+# Mostrar cambios actuales
+Write-Host "[1/5] Cambios actuales:" -ForegroundColor Yellow
 git status --short
 Write-Host ""
 
-# Traer cambios de GitHub antes de trabajar
-Write-Host "[2/5] Sincronizando con GitHub..." -ForegroundColor Yellow
+# Pedir mensaje del commit
+$mensaje = Read-Host "Describe los cambios realizados"
+
+if ([string]::IsNullOrWhiteSpace($mensaje)) {
+    Write-Host "ERROR: Debes escribir una descripcion." -ForegroundColor Red
+    exit 1
+}
+
+# Preparar archivos
+Write-Host ""
+Write-Host "[2/5] Preparando archivos..." -ForegroundColor Yellow
+git add .
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERROR al preparar los archivos." -ForegroundColor Red
+    exit 1
+}
+
+# Comprobar si hay cambios para guardar
+git diff --cached --quiet
+
+if ($LASTEXITCODE -eq 0) {
+    Write-Host ""
+    Write-Host "No hay cambios nuevos para guardar." -ForegroundColor Yellow
+    exit 0
+}
+
+# Crear commit
+Write-Host "[3/5] Creando commit..." -ForegroundColor Yellow
+git commit -m "$mensaje"
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERROR al crear el commit." -ForegroundColor Red
+    exit 1
+}
+
+# Sincronizar con GitHub
+Write-Host "[4/5] Sincronizando con GitHub..." -ForegroundColor Yellow
 git pull --rebase origin main
 
 if ($LASTEXITCODE -ne 0) {
@@ -28,46 +64,11 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "========================================" -ForegroundColor Red
     Write-Host ""
     Write-Host "Puede existir un conflicto que debe resolverse manualmente." -ForegroundColor Yellow
-    Write-Host "El proceso se detuvo para proteger tus cambios." -ForegroundColor Yellow
+    Write-Host "Tus cambios ya estan guardados en un commit local." -ForegroundColor Yellow
     exit 1
 }
 
-Write-Host ""
-Write-Host "Describe los cambios realizados:" -ForegroundColor Yellow
-$mensaje = Read-Host ">"
-
-if ([string]::IsNullOrWhiteSpace($mensaje)) {
-    Write-Host "ERROR: Debes escribir una descripcion." -ForegroundColor Red
-    exit 1
-}
-
-Write-Host ""
-Write-Host "[3/5] Preparando archivos..." -ForegroundColor Yellow
-git add .
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR al preparar los archivos." -ForegroundColor Red
-    exit 1
-}
-
-# Comprobar si realmente hay cambios
-git diff --cached --quiet
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host ""
-    Write-Host "No hay cambios nuevos para guardar." -ForegroundColor Yellow
-    exit 0
-}
-
-Write-Host "[4/5] Creando commit..." -ForegroundColor Yellow
-git commit -m "$mensaje"
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR al crear el commit." -ForegroundColor Red
-    exit 1
-}
-
-Write-Host ""
+# Subir cambios
 Write-Host "[5/5] Subiendo cambios a GitHub..." -ForegroundColor Yellow
 git push origin main
 

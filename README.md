@@ -103,3 +103,4 @@ Una vez finalizado el proyecto académico, se contempla la posibilidad de contin
 - Mejoras de diseño y accesibilidad.
 
 Estas funciones no forman parte del alcance inicial y se considerarían posteriormente de acuerdo con la evolución del proyecto.
+
