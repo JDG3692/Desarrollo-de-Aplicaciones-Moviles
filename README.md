@@ -2,7 +2,7 @@
 
 ## 1. Descripción del proyecto
 
-**Agenda Personal** será una aplicación móvil para Android orientada a la organización de actividades y compromisos personales y académicos. La **pantalla principal** mostrará las actividades pendientes correspondientes al **día actual**, permitiendo consultar rápidamente lo que está pendiente y agregar nuevas actividades.
+**Agenda Personal** será una aplicación móvil para Android orientada principalmente a la **organización de actividades y compromisos laborales**, aunque también podrá utilizarse para actividades personales y académicas. La **pantalla principal** mostrará las actividades pendientes correspondientes al **día actual**, permitiendo consultar rápidamente lo que está pendiente y agregar nuevas actividades.
 
 Desde la pantalla principal habrá una opción para acceder a una **vista de calendario mensual**, donde el usuario podrá visualizar las actividades programadas durante el mes y seleccionar una fecha específica para consultarlas.
 
@@ -14,15 +14,17 @@ La propuesta inicial busca mantener una aplicación sencilla y práctica, pero c
 
 ## 2. Exposición del problema
 
-En mi experiencia personal, tengo diferentes actividades y compromisos que debo recordar durante el día, la semana y el mes. Aunque existen herramientas como Google Calendar, en algunas ocasiones considero que registrar una actividad puede resultar más elaborado de lo necesario cuando solamente se desea anotar rápidamente algo que se debe realizar. Esto puede hacer que algunos pendientes terminen registrados en diferentes lugares o que se dependa de la memoria para recordarlos.
+En mi experiencia laboral, tengo diariamente diferentes **tareas, actividades y compromisos** que debo recordar y atender durante la jornada, la semana y el mes. Cuando se acumulan varios pendientes, puede resultar difícil mantenerlos todos presentes, especialmente cuando se utiliza la memoria o diferentes medios para registrar lo que se necesita realizar.
 
-A partir de esta necesidad surge la idea de desarrollar una agenda móvil sencilla que muestre en primer lugar las actividades del día actual, permita consultar una visión mensual de los compromisos y facilite el registro rápido de nuevos recordatorios. También se busca evitar que las actividades ya realizadas permanezcan acumuladas en la pantalla principal.
+Aunque existen herramientas como Google Calendar y otras aplicaciones de organización, en algunas ocasiones considero que registrar una actividad puede resultar más elaborado de lo necesario cuando solamente se desea anotar rápidamente algo que se debe hacer. Esto puede llevar a que algunos pendientes terminen registrados en diferentes lugares o a que se dependa de la memoria para recordarlos.
+
+A partir de esta necesidad surge la idea de desarrollar una agenda móvil sencilla, con un enfoque inicial en la **organización de actividades laborales**, que muestre en primer lugar los pendientes del día actual, permita consultar una visión mensual de los compromisos y facilite el registro rápido de nuevos recordatorios. También se busca evitar que las actividades ya realizadas permanezcan acumuladas en la pantalla principal.
 
 ## 3. Objetivo del proyecto
 
 ### Objetivo general
 
-Desarrollar una aplicación móvil para Android que facilite la organización de actividades personales y académicas mediante una pantalla principal centrada en el día actual, una vista de calendario mensual y un sistema de recordatorios.
+Desarrollar una aplicación móvil para Android que facilite la **organización y seguimiento de actividades laborales**, mediante una pantalla principal centrada en el día actual, una vista de calendario mensual y un sistema de recordatorios.
 
 ### Objetivos específicos
 
@@ -45,7 +47,7 @@ Durante el desarrollo se estudiarán las herramientas y componentes necesarios p
 
 ### Interfaz de usuario
 
-La aplicación estará diseñada principalmente para un usuario que necesita organizar sus actividades. Las principales vistas y funciones consideradas inicialmente son:
+La aplicación estará diseñada principalmente para un usuario que necesita organizar sus actividades laborales. Las principales vistas y funciones consideradas inicialmente son:
 
 - **Pantalla principal / vista diaria:** mostrará las actividades pendientes del día actual y contará con un botón para agregar una nueva actividad.
 - **Vista mensual:** permitirá visualizar el calendario completo y reconocer los días que tienen actividades programadas. Desde esta vista se podrá seleccionar una fecha para consultar sus actividades.
@@ -55,7 +57,7 @@ La aplicación estará diseñada principalmente para un usuario que necesita org
 
 ### Interfaz de administración
 
-La primera versión del proyecto no contempla diferentes tipos de usuarios ni un perfil administrativo independiente, debido a que la aplicación está planteada como una herramienta de uso personal. Las opciones de gestión necesarias estarán disponibles directamente para el usuario.
+La primera versión del proyecto no contempla diferentes tipos de usuarios ni un perfil administrativo independiente, debido a que la aplicación está planteada como una herramienta de uso personal para la **organización de actividades, principalmente laborales**. Las opciones de gestión necesarias estarán disponibles directamente para el usuario.
 
 ## 6. Funcionalidad
 
@@ -86,7 +88,7 @@ Las pantallas que se consideran inicialmente son:
 
 ## 8. Alcance inicial
 
-La primera versión del proyecto se enfocará en las funciones básicas de una agenda personal, dando prioridad a la pantalla del día actual, la consulta mediante calendario mensual y el funcionamiento de los recordatorios. Se priorizará que registrar una actividad sea rápido y sencillo y que, una vez completada, deje de aparecer entre las actividades pendientes.
+La primera versión del proyecto se enfocará en las funciones básicas de una agenda personal, con **prioridad en la organización de actividades laborales**, dando especial importancia a la pantalla del día actual, la consulta mediante calendario mensual y el funcionamiento de los recordatorios. Se priorizará que registrar una actividad sea rápido y sencillo y que, una vez completada, deje de aparecer entre las actividades pendientes.
 
 ## 9. Posibles mejoras futuras
 
