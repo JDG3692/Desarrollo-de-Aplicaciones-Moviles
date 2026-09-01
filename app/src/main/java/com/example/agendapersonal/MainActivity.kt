@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.agendapersonal.ui.theme.AgendaPersonalTheme
-
+import androidx.compose.runtime.mutableStateListOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +45,8 @@ class MainActivity : ComponentActivity() {
 fun Greeting( modifier: Modifier = Modifier) {
 
     var tareaAgregada by remember { mutableStateOf(false) }
+    var textoTarea by remember { mutableStateOf("") }
+    val tareas = remember { mutableStateListOf<String>() }
 
     Column(
         modifier = modifier
@@ -58,15 +61,29 @@ fun Greeting( modifier: Modifier = Modifier) {
 
         Text("Organiza tu día")
 
+        TextField(
+            value = textoTarea,
+            onValueChange = { nuevoTexto ->
+                textoTarea = nuevoTexto }
+        )
+
         Button(
             onClick = {
-                tareaAgregada = true
+               if((textoTarea.isNotBlank()))
+                   tareas.add(textoTarea)
+                    textoTarea = ""
+                    tareaAgregada = true
             }
+
         ) {
             Text("Agregar tarea")
         }
-        if (tareaAgregada){
-            Text("¡Tarea agregada!")
+
+        tareas.forEach { tarea ->
+            Text(
+                text = "• $tarea",
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }
