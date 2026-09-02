@@ -29,6 +29,11 @@ import java.util.Date
 import java.util.Locale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Card
+import androidx.compose.foundation.layout.fillMaxWidth
+
 
 @Composable
 fun DiaScreen(
@@ -48,26 +53,63 @@ fun DiaScreen(
     ) {
 
         Text(
+            text = "Bienvenido a tu",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
             text = "Agenda Personal",
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold
         )
 
-        Text("Organiza tu día")
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Hoy es",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium
+        )
 
         Text(
             text = SimpleDateFormat(
                 "EEEE, d 'de' MMMM 'de' yyyy",
                 Locale("es", "CO")
-            ).format(Date())
+            ).format(Date()),
+            fontSize = 20.sp
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Nueva actividad",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
 
         TextField(
             value = textoTarea,
             onValueChange = { nuevoTexto ->
                 textoTarea = nuevoTexto
+            },
+            label = {
+                Text("¿Qué tienes que hacer?")
             }
         )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Hora",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedButton(
             onClick = {
                 mostrarSelectorHora = true
@@ -97,7 +139,7 @@ fun DiaScreen(
         }
         Button(
             onClick = {
-                if (textoTarea.isNotBlank()) {
+                if (textoTarea.isNotBlank() && horaTarea.isNotBlank()) {
                     agendaViewModel.agregarActividad(
                         Actividad(
                             id = actividades.size + 1,
@@ -112,23 +154,63 @@ fun DiaScreen(
                 }
             }
         ) {
-            Text("Agregar tarea")
+            Text("Agregar Actividad")
         }
-        actividades.forEach { actividad ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = actividad.completada,
-                    onCheckedChange = {
-                        agendaViewModel.completarActividad(actividad.id)
-                    }
-                )
+        Spacer(modifier = Modifier.height(24.dp))
 
-                Text(
-                    text = "${actividad.hora} - ${actividad.titulo}",
-                    modifier = Modifier.padding(8.dp)
-                )
+        Text(
+            text = "Actividades para hoy",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        actividades
+            .filter { !it.completada }
+            .sortedBy { it.hora }
+            .forEach { actividad ->
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp)
+                    ) {
+
+                    Checkbox(
+                        checked = actividad.completada,
+                        onCheckedChange = {
+                            agendaViewModel.completarActividad(actividad.id)
+                        }
+                    )
+
+                    Column(
+                        modifier = Modifier.padding(start = 8.dp)
+                    ) {
+
+                        Text(
+                            text = try {
+                                SimpleDateFormat("hh:mm a", Locale.getDefault()).format(
+                                    SimpleDateFormat("HH:mm", Locale.getDefault()).parse(actividad.hora)!!
+                                )
+                            } catch (e: Exception) {
+                                actividad.hora
+                            },
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = actividad.titulo,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
             }
         }
     }
