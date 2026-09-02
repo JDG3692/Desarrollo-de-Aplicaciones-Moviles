@@ -20,6 +20,15 @@ import com.example.agendapersonal.viewmodel.AgendaViewModel
 import androidx.compose.foundation.layout.Row
 import androidx.compose.ui.Alignment
 import androidx.compose.material3.Checkbox
+import android.app.TimePickerDialog
+import androidx.compose.material3.OutlinedButton
+import java.util.Calendar
+import androidx.compose.ui.platform.LocalContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun DiaScreen(
@@ -27,6 +36,8 @@ fun DiaScreen(
 ) {
 
     var textoTarea by remember { mutableStateOf("") }
+    var horaTarea by remember { mutableStateOf("") }
+    var mostrarSelectorHora by remember { mutableStateOf(false) }
 
     val actividades by agendaViewModel.actividades.collectAsState()
 
@@ -36,9 +47,20 @@ fun DiaScreen(
             .padding(24.dp)
     ) {
 
-        Text("Agenda Personal")
+        Text(
+            text = "Agenda Personal",
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold
+        )
 
         Text("Organiza tu día")
+
+        Text(
+            text = SimpleDateFormat(
+                "EEEE, d 'de' MMMM 'de' yyyy",
+                Locale("es", "CO")
+            ).format(Date())
+        )
 
         TextField(
             value = textoTarea,
@@ -46,7 +68,33 @@ fun DiaScreen(
                 textoTarea = nuevoTexto
             }
         )
+        OutlinedButton(
+            onClick = {
+                mostrarSelectorHora = true
+            }
+        ) {
+            Text(
+                text = if (horaTarea.isEmpty()) {
+                    "Seleccionar hora"
+                } else {
+                    "Hora: $horaTarea"
+                }
+            )
+        }
+        if (mostrarSelectorHora) {
+            val calendario = Calendar.getInstance()
 
+            TimePickerDialog(
+                LocalContext.current,
+                { _, hora, minuto ->
+                    horaTarea = String.format("%02d:%02d", hora, minuto)
+                    mostrarSelectorHora = false
+                },
+                calendario.get(Calendar.HOUR_OF_DAY),
+                calendario.get(Calendar.MINUTE),
+                true
+            ).show()
+        }
         Button(
             onClick = {
                 if (textoTarea.isNotBlank()) {
@@ -54,12 +102,13 @@ fun DiaScreen(
                         Actividad(
                             id = actividades.size + 1,
                             titulo = textoTarea,
-                            fecha = "Hoy",
-                            hora = "00:00"
+                            fecha = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
+                            hora = horaTarea
                         )
                     )
 
                     textoTarea = ""
+                    horaTarea = ""
                 }
             }
         ) {
