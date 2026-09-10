@@ -97,6 +97,8 @@ Los wireframes se utilizan para definir la estructura visual, la distribución d
 
 ### Wireframe 01 — Día / Hoy
 
+![Wireframe 01 — Día / Hoy](docs/wireframes/Wireframe%201.png)
+
 Pantalla principal de la aplicación. Incluye el encabezado de bienvenida, la fecha consultada con navegación entre días, creación rápida de actividades, lista cronológica de actividades y acceso a las funciones principales.
 
 - Navegación al día anterior y siguiente.
@@ -110,6 +112,8 @@ Pantalla principal de la aplicación. Incluye el encabezado de bienvenida, la fe
 
 ### Wireframe 02 — Programar actividad
 
+![Wireframe 02 — Programar actividad](docs/wireframes/Wireframe%202.png)
+
 Pantalla destinada a crear una actividad para una fecha y hora específicas, especialmente para actividades futuras.
 
 - Regreso a la pantalla anterior.
@@ -120,6 +124,8 @@ Pantalla destinada a crear una actividad para una fecha y hora específicas, esp
 - Los controles de sonido y notificación se gestionan posteriormente desde la tarjeta de la actividad.
 
 ### Wireframe 03 — Calendario
+
+![Wireframe 03 — Calendario](docs/wireframes/Wireframe%203.png)
 
 Pantalla de consulta mensual y navegación entre fechas.
 
@@ -133,6 +139,8 @@ Pantalla de consulta mensual y navegación entre fechas.
 
 ### Wireframe 04 — Editar actividad
 
+![Wireframe 04 — Editar actividad](docs/wireframes/Wireframe%204.png)
+
 Pantalla utilizada al tocar una actividad desde Día/Hoy o Calendario.
 
 - Regreso sin guardar cambios.
@@ -142,6 +150,10 @@ Pantalla utilizada al tocar una actividad desde Día/Hoy o Calendario.
 - Botón **Guardar cambios**.
 - Botón **Eliminar actividad**.
 - Los controles de sonido y notificación continúan gestionándose desde la tarjeta de la actividad.
+
+### Wireframes completos
+
+![Wireframes completos](docs/wireframes/Wireframes.png)
 
 ### Flujo principal
 
