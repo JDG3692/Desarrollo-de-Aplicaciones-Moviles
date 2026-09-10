@@ -91,6 +91,14 @@ fun DiaScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        if (fechaConsultada == fechaHoy) {
+            Text(
+                text = "Hoy es",
+                fontSize = 16.sp,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        }
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
