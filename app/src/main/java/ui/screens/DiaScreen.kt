@@ -257,7 +257,7 @@ fun DiaScreen(
                 if (textoTarea.isNotBlank() && horaTarea.isNotBlank()) {
                     agendaViewModel.agregarActividad(
                         Actividad(
-                            id = actividades.size + 1,
+                            id = 0,
                             titulo = textoTarea,
                             fecha = SimpleDateFormat(
                                 "yyyy-MM-dd",

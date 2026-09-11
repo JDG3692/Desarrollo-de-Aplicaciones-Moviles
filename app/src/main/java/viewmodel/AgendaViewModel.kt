@@ -1,27 +1,43 @@
 package com.example.agendapersonal.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.agendapersonal.model.Actividad
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.example.agendapersonal.model.AgendaDatabase
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-class AgendaViewModel : ViewModel() {
+class AgendaViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _actividades = MutableStateFlow<List<Actividad>>(emptyList())
+    private val actividadDao = AgendaDatabase
+        .obtenerBaseDeDatos(application)
+        .actividadDao()
 
-    val actividades: StateFlow<List<Actividad>> = _actividades.asStateFlow()
+    val actividades: StateFlow<List<Actividad>> =
+        actividadDao.obtenerActividades()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptyList()
+            )
 
     fun agregarActividad(actividad: Actividad) {
-        _actividades.value = _actividades.value + actividad
+        viewModelScope.launch {
+            actividadDao.insertarActividad(actividad)
+        }
     }
 
     fun completarActividad(id: Int) {
-        _actividades.value = _actividades.value.map { actividad ->
-            if (actividad.id == id) {
-                actividad.copy(completada = true)
-            } else {
-                actividad
+        viewModelScope.launch {
+            val actividad = actividades.value.find { it.id == id }
+
+            if (actividad != null) {
+                actividadDao.actualizarActividad(
+                    actividad.copy(completada = true)
+                )
             }
         }
     }
