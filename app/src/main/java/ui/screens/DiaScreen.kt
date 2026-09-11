@@ -53,7 +53,7 @@ import androidx.compose.ui.res.painterResource
 import com.example.agendapersonal.R
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material3.Icon
+
 
 
 @Composable
@@ -198,7 +198,7 @@ fun DiaScreen(
                         Locale.getDefault()
                     ).parse(fechaConsultada)!!
 
-                    calendario.add(Calendar.DAY_OF_MONTH, -1)
+                    calendario.add(Calendar.DAY_OF_MONTH, 1)
 
                     fechaConsultada = SimpleDateFormat(
                         "yyyy-MM-dd",
@@ -234,7 +234,7 @@ fun DiaScreen(
             },
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
-                Text("¿Qué tienes que hacer?")
+                Text("¿Qué tienes que hacer hoy?")
             },
             shape = RoundedCornerShape(8.dp),
             colors = androidx.compose.material3.TextFieldDefaults.colors(

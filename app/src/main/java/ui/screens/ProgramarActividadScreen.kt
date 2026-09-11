@@ -94,7 +94,7 @@ fun ProgramarActividadScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "¿Qué tienes que hacer?",
+            text = "¿Qué actividad quieres programar?",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
@@ -108,7 +108,7 @@ fun ProgramarActividadScreen(
             },
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
-                Text("Escribe la tarea")
+                Text("Escribe la actividad")
             },
             shape = RoundedCornerShape(8.dp),
             colors = androidx.compose.material3.TextFieldDefaults.colors(
