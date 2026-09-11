@@ -31,6 +31,13 @@ import java.util.Locale
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.Color
+import androidx.compose.material.icons.filled.ArrowBack
 
 @Composable
 fun ProgramarActividadScreen(
@@ -60,7 +67,7 @@ fun ProgramarActividadScreen(
     ) {
 
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -72,9 +79,9 @@ fun ProgramarActividadScreen(
                     onVolver()
                 }
             ) {
-                Text(
-                    text = "←",
-                    fontSize = 28.sp
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Regresar"
                 )
             }
 
@@ -96,13 +103,20 @@ fun ProgramarActividadScreen(
 
         TextField(
             value = textoTarea,
-            onValueChange = {
-                textoTarea = it
+            onValueChange = { nuevoTexto ->
+                textoTarea = nuevoTexto
             },
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
-                Text("Escribe la actividad")
-            }
+                Text("Escribe la tarea")
+            },
+            shape = RoundedCornerShape(8.dp),
+            colors = androidx.compose.material3.TextFieldDefaults.colors(
+                unfocusedContainerColor = Color(0xFFF0F1F8),
+                focusedContainerColor = Color(0xFFF0F1F8),
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -149,9 +163,10 @@ fun ProgramarActividadScreen(
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
             ) {
 
-                Text(
-                    text = "📅",
-                    fontSize = 18.sp
+                Icon(
+                    imageVector = Icons.Default.CalendarMonth,
+                    contentDescription = "Seleccionar fecha",
+                    tint = androidx.compose.ui.graphics.Color(0xFF3F6FC4)
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -217,9 +232,10 @@ fun ProgramarActividadScreen(
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
             ) {
 
-                Text(
-                    text = "🕐",
-                    fontSize = 18.sp
+                Icon(
+                    imageVector = Icons.Default.AccessTime,
+                    contentDescription = "Seleccionar hora",
+                    tint = androidx.compose.ui.graphics.Color(0xFF3F6FC4)
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -250,7 +266,7 @@ fun ProgramarActividadScreen(
         }
 
 
-    Spacer(modifier = Modifier.height(50.dp))
+    Spacer(modifier = Modifier.height(30.dp))
 
     Button(
         onClick = {

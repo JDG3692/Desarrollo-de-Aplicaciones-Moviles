@@ -40,11 +40,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
-
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.NotificationsOff
+import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.ui.res.painterResource
+import com.example.agendapersonal.R
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.Icon
 
 
 @Composable
@@ -76,12 +85,20 @@ fun DiaScreen(
 
     val actividades by agendaViewModel.actividades.collectAsState()
 
+    LaunchedEffect(actividades) {
+        val ids = actividades.map { it.id }.toSet()
+
+        actividadesConNotificacion = ids
+        actividadesConSonido = ids
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(24.dp)
     ) {
+        Spacer(modifier = Modifier.height(30.dp))
 
         Text(
             text = "Bienvenido a tu",
@@ -95,7 +112,7 @@ fun DiaScreen(
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         if (fechaConsultada == fechaHoy) {
             Text(
@@ -124,20 +141,41 @@ fun DiaScreen(
                         "yyyy-MM-dd",
                         Locale.getDefault()
                     ).format(calendario.time)
-                }
+                },
+                modifier = Modifier.width(48.dp)
             ) {
-                Text(
-                    text = "‹",
-                    fontSize = 24.sp
+                Icon(
+                    imageVector = Icons.Default.ChevronLeft,
+                    contentDescription = "Día anterior",
+                    tint = Color(0xFF3F6FC4)
                 )
             }
 
-            Card(
-                modifier = Modifier.weight(1f)
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = SimpleDateFormat(
-                        "EEEE, d 'de' MMMM 'de' yyyy",
+                        "EEEE",
+                        Locale("es", "CO")
+                    ).format(
+                        SimpleDateFormat(
+                            "yyyy-MM-dd",
+                            Locale.getDefault()
+                        ).parse(fechaConsultada)!!
+                    ).uppercase(),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF3F6FC4)
+                )
+
+                Text(
+                    text = SimpleDateFormat(
+                        "d 'de' MMMM 'de' yyyy",
                         Locale("es", "CO")
                     ).format(
                         SimpleDateFormat(
@@ -145,11 +183,9 @@ fun DiaScreen(
                             Locale.getDefault()
                         ).parse(fechaConsultada)!!
                     ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
+                    color = Color(0xFF303030),
                     maxLines = 1
                 )
             }
@@ -162,22 +198,24 @@ fun DiaScreen(
                         Locale.getDefault()
                     ).parse(fechaConsultada)!!
 
-                    calendario.add(Calendar.DAY_OF_MONTH, 1)
+                    calendario.add(Calendar.DAY_OF_MONTH, -1)
 
                     fechaConsultada = SimpleDateFormat(
                         "yyyy-MM-dd",
                         Locale.getDefault()
                     ).format(calendario.time)
-                }
+                },
+                modifier = Modifier.width(48.dp)
             ) {
-                Text(
-                    text = "›",
-                    fontSize = 24.sp
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = "Día siguiente",
+                    tint = Color(0xFF3F6FC4)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         if (fechaConsultada == fechaHoy) {
 
@@ -223,9 +261,10 @@ fun DiaScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Text(
-                    text = "🕐",
-                    fontSize = 22.sp
+                Icon(
+                    imageVector = Icons.Default.AccessTime,
+                    contentDescription = "Seleccionar hora",
+                    tint = Color(0xFF3F6FC4)
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -282,6 +321,7 @@ fun DiaScreen(
                 .height(48.dp),
             shape = RoundedCornerShape(24.dp)
         ) {
+
             Text(
                 text = "Agregar Actividad",
                 fontSize = 14.sp
@@ -289,7 +329,7 @@ fun DiaScreen(
         }
 
         }
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Text(
             text = if (fechaConsultada == fechaHoy) {
@@ -316,13 +356,20 @@ fun DiaScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp)
+                        .padding(vertical = 4.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = androidx.compose.material3.CardDefaults.cardColors(
+                        containerColor = Color.White
+                    ),
+                    border = androidx.compose.foundation.BorderStroke(
+                        1.dp,
+                        Color(0xFFD9E2F2)
+                    )
                 ) {
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
@@ -352,7 +399,7 @@ fun DiaScreen(
                                     actividad.hora
                                 },
                                 fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Medium
                             )
 
                             Text(
@@ -361,7 +408,7 @@ fun DiaScreen(
                             )
                         }
 
-                        OutlinedButton(
+                        IconButton(
                             onClick = {
                                 actividadesConSonido =
                                     if (actividad.id in actividadesConSonido) {
@@ -369,18 +416,20 @@ fun DiaScreen(
                                     } else {
                                         actividadesConSonido + actividad.id
                                     }
-                            },
-                            modifier = Modifier
-                                .height(40.dp),
-                            shape = RoundedCornerShape(20.dp)
+                            }
                         ) {
-                            Text(
-                                text = if (actividad.id in actividadesConSonido) {
-                                    "🔊"
+                            Icon(
+                                imageVector = if (actividad.id in actividadesConSonido) {
+                                    Icons.Default.VolumeUp
                                 } else {
-                                    "🔇"
+                                    Icons.Default.VolumeOff
                                 },
-                                color = if (actividad.id in actividadesConSonido) {
+                                contentDescription = if (actividad.id in actividadesConSonido) {
+                                    "Sonido activado"
+                                } else {
+                                    "Sonido desactivado"
+                                },
+                                tint = if (actividad.id in actividadesConSonido) {
                                     Color(0xFF3F6FC4)
                                 } else {
                                     Color.Gray
@@ -388,9 +437,7 @@ fun DiaScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(4.dp))
-
-                        OutlinedButton(
+                        IconButton(
                             onClick = {
                                 actividadesConNotificacion =
                                     if (actividad.id in actividadesConNotificacion) {
@@ -398,18 +445,20 @@ fun DiaScreen(
                                     } else {
                                         actividadesConNotificacion + actividad.id
                                     }
-                            },
-                            modifier = Modifier
-                                .height(40.dp),
-                            shape = RoundedCornerShape(20.dp)
+                            }
                         ) {
-                            Text(
-                                text = if (actividad.id in actividadesConNotificacion) {
-                                    "🔔"
+                            Icon(
+                                imageVector = if (actividad.id in actividadesConNotificacion) {
+                                    Icons.Default.Notifications
                                 } else {
-                                    "🔕"
+                                    Icons.Default.NotificationsOff
                                 },
-                                color = if (actividad.id in actividadesConNotificacion) {
+                                contentDescription = if (actividad.id in actividadesConNotificacion) {
+                                    "Notificación activada"
+                                } else {
+                                    "Notificación desactivada"
+                                },
+                                tint = if (actividad.id in actividadesConNotificacion) {
                                     Color(0xFF3F6FC4)
                                 } else {
                                     Color.Gray
@@ -419,6 +468,7 @@ fun DiaScreen(
                     }
                 }
             }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
@@ -426,12 +476,9 @@ fun DiaScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            if (fechaConsultada == fechaHoy) {
 
-                Button(
+                OutlinedButton(
                     onClick = {
                         onProgramarActividad()
                     },
@@ -444,50 +491,52 @@ fun DiaScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Agregar actividad"
+                            painter = painterResource(id = R.drawable.ic_calendar_add_on),
+                            contentDescription = "Programar actividad",
+                            tint = Color(0xFF3F6FC4)
                         )
 
                         Spacer(modifier = Modifier.width(6.dp))
 
                         Text(
                             text = "Programar\nactividad",
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            color = Color(0xFF3F6FC4)
                         )
                     }
                 }
-
-                Button(
-                    onClick = {
-                        // Más adelante abrirá Calendario
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(52.dp),
-                    shape = RoundedCornerShape(12.dp)
+            }
+            Button(
+                onClick = {
+                    // Más adelante abrirá Calendario
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(52.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = "Calendario",
+                        tint = Color.White
+                    )
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "📅",
-                                fontSize = 18.sp
-                            )
+                    Spacer(modifier = Modifier.width(6.dp))
 
-                            Spacer(modifier = Modifier.width(6.dp))
-
-                            Text(
-                                text = "Calendario",
-                                fontSize = 12.sp
-                            )
-                        }
-                    }
+                    Text(
+                        text = "Calendario",
+                        fontSize = 12.sp,
+                        color = Color.White
+                    )
                 }
             }
+        }
     }
 }
-}
+
+
+
+
