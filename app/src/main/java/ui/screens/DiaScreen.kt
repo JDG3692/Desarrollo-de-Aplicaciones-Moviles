@@ -40,11 +40,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
+
 
 
 @Composable
 fun DiaScreen(
-    agendaViewModel: AgendaViewModel = viewModel()
+    agendaViewModel: AgendaViewModel = viewModel(),
+    onProgramarActividad: () -> Unit = {}
 ) {
 
     var textoTarea by remember { mutableStateOf("") }
@@ -218,7 +224,7 @@ fun DiaScreen(
             ) {
 
                 Text(
-                    text = "◷",
+                    text = "🕐",
                     fontSize = 22.sp
                 )
 
@@ -420,35 +426,68 @@ fun DiaScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-            Button(
-                onClick = {
-                    // Más adelante abrirá Programar actividad
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(52.dp),
-                shape = RoundedCornerShape(12.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = "Programar\nactividad",
-                    fontSize = 12.sp
-                )
-            }
 
-            Button(
-                onClick = {
-                    // Más adelante abrirá Calendario
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(52.dp),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Calendario",
-                    fontSize = 12.sp
-                )
+                Button(
+                    onClick = {
+                        onProgramarActividad()
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Agregar actividad"
+                        )
+
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        Text(
+                            text = "Programar\nactividad",
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+
+                Button(
+                    onClick = {
+                        // Más adelante abrirá Calendario
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "📅",
+                                fontSize = 18.sp
+                            )
+
+                            Spacer(modifier = Modifier.width(6.dp))
+
+                            Text(
+                                text = "Calendario",
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                }
             }
-        }
     }
+}
 }

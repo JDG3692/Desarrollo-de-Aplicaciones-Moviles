@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.agendapersonal.ui.screens.DiaScreen
+import com.example.agendapersonal.ui.screens.ProgramarActividadScreen
 
 @Composable
 fun AppNavigation() {
@@ -15,7 +16,19 @@ fun AppNavigation() {
         startDestination = "dia"
     ) {
         composable("dia") {
-            DiaScreen()
+            DiaScreen(
+                onProgramarActividad = {
+                    navController.navigate("programar")
+                }
+            )
+        }
+
+        composable("programar") {
+            ProgramarActividadScreen(
+                onVolver = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
