@@ -34,6 +34,7 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = emptyList()
             )
+
     // Agrega una nueva actividad a la base de datos.
     fun agregarActividad(actividad: Actividad) {
         // Ejecuta la operación de base de datos en una corrutina.
@@ -41,6 +42,7 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             actividadDao.insertarActividad(actividad)
         }
     }
+
     // Marca una actividad como completada utilizando su identificador.
     fun completarActividad(id: Int) {
         // Ejecuta la actualización de la actividad en una corrutina.

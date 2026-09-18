@@ -293,45 +293,45 @@ fun ProgramarActividadScreen(
             }
         }
 
-    // Espacio entre la selección de hora y el botón para guardar.
-    Spacer(modifier = Modifier.height(30.dp))
+        // Espacio entre la selección de hora y el botón para guardar.
+        Spacer(modifier = Modifier.height(30.dp))
 
-    // Botón que guarda la actividad programada.
-    Button(
-        onClick = {
-            // Verifica que el título, la fecha y la hora hayan sido ingresados.
-            if (
-                textoTarea.isNotBlank() &&
-                fechaTarea.isNotBlank() &&
-                horaTarea.isNotBlank()
-            ) {
-                // Envía la actividad al ViewModel para guardarla en Room.
-                agendaViewModel.agregarActividad(
-                    Actividad(
-                        titulo = textoTarea,
-                        fecha = fechaTarea,
-                        hora = horaTarea
+        // Botón que guarda la actividad programada.
+        Button(
+            onClick = {
+                // Verifica que el título, la fecha y la hora hayan sido ingresados.
+                if (
+                    textoTarea.isNotBlank() &&
+                    fechaTarea.isNotBlank() &&
+                    horaTarea.isNotBlank()
+                ) {
+                    // Envía la actividad al ViewModel para guardarla en Room.
+                    agendaViewModel.agregarActividad(
+                        Actividad(
+                            titulo = textoTarea,
+                            fecha = fechaTarea,
+                            hora = horaTarea
+                        )
                     )
-                )
-                // Limpia los campos después de guardar la actividad.
-                textoTarea = ""
-                fechaTarea = ""
-                horaTarea = ""
+                    // Limpia los campos después de guardar la actividad.
+                    textoTarea = ""
+                    fechaTarea = ""
+                    horaTarea = ""
 
-                // Regresa a la pantalla anterior después de guardar.
-                onVolver()
-            }
-        },
-        // Define el ancho y la altura del botón.
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-    ) {
-        // Texto mostrado dentro del botón.
-        Text(
-            text = "Programar actividad"
-        )
+                    // Regresa a la pantalla anterior después de guardar.
+                    onVolver()
+                }
+            },
+            // Define el ancho y la altura del botón.
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+        ) {
+            // Texto mostrado dentro del botón.
+            Text(
+                text = "Programar actividad"
+            )
+        }
     }
-}
 }
 

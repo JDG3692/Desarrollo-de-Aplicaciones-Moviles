@@ -53,6 +53,7 @@ import androidx.compose.ui.res.painterResource
 import com.example.agendapersonal.R
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.ui.text.style.TextAlign
 
 
 // Pantalla principal de la agenda diaria.
@@ -197,9 +198,11 @@ fun DiaScreen(
                             Locale.getDefault()
                         ).parse(fechaConsultada)!!
                     ).uppercase(),
+                    modifier = Modifier.fillMaxWidth(),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF3F6FC4)
+                    color = Color(0xFF3F6FC4),
+                    textAlign = TextAlign.Center
                 )
                 // Muestra la fecha completa que está siendo consultada.
                 Text(
@@ -212,10 +215,12 @@ fun DiaScreen(
                             Locale.getDefault()
                         ).parse(fechaConsultada)!!
                     ),
+                    modifier = Modifier.fillMaxWidth(),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color(0xFF303030),
-                    maxLines = 1
+                    maxLines = 1,
+                    textAlign = TextAlign.Center
                 )
             }
             // Botón para consultar el día siguiente.
@@ -256,130 +261,130 @@ fun DiaScreen(
         // Solo está disponible cuando se está consultando el día actual.
         if (fechaConsultada == fechaHoy) {
 
-        // Título de la sección de creación de actividades.
-        Text(
-            text = "Nueva actividad",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
-        // Espacio entre el título y el campo de texto.
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Campo donde el usuario escribe el nombre o descripción de la actividad.
-        TextField(
-            value = textoTarea,
-            onValueChange = { nuevoTexto ->
-                textoTarea = nuevoTexto
-            },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = {
-                Text("¿Qué tienes que hacer hoy?")
-            },
-            shape = RoundedCornerShape(8.dp),
-            colors = androidx.compose.material3.TextFieldDefaults.colors(
-                unfocusedContainerColor = Color(0xFFF0F1F8),
-                focusedContainerColor = Color(0xFFF0F1F8),
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
+            // Título de la sección de creación de actividades.
+            Text(
+                text = "Nueva actividad",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
             )
-        )
-        // Espacio entre el campo de texto y el selector de hora.
-        Spacer(modifier = Modifier.height(10.dp))
+            // Espacio entre el título y el campo de texto.
+            Spacer(modifier = Modifier.height(12.dp))
 
-        // Botón que permite seleccionar la hora de la actividad.
-        OutlinedButton(
-            onClick = {
-                mostrarSelectorHora = true
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            shape = RoundedCornerShape(24.dp)
-        ) {
-            Row(
+            // Campo donde el usuario escribe el nombre o descripción de la actividad.
+            TextField(
+                value = textoTarea,
+                onValueChange = { nuevoTexto ->
+                    textoTarea = nuevoTexto
+                },
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Icono que representa la selección de hora.
-                Icon(
-                    imageVector = Icons.Default.AccessTime,
-                    contentDescription = "Seleccionar hora",
-                    tint = Color(0xFF3F6FC4)
+                placeholder = {
+                    Text("¿Qué tienes que hacer hoy?")
+                },
+                shape = RoundedCornerShape(8.dp),
+                colors = androidx.compose.material3.TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color(0xFFF0F1F8),
+                    focusedContainerColor = Color(0xFFF0F1F8),
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent
                 )
+            )
+            // Espacio entre el campo de texto y el selector de hora.
+            Spacer(modifier = Modifier.height(10.dp))
 
-                // Espacio entre el icono y el texto.
-                Spacer(modifier = Modifier.width(8.dp))
+            // Botón que permite seleccionar la hora de la actividad.
+            OutlinedButton(
+                onClick = {
+                    mostrarSelectorHora = true
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(24.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Icono que representa la selección de hora.
+                    Icon(
+                        imageVector = Icons.Default.AccessTime,
+                        contentDescription = "Seleccionar hora",
+                        tint = Color(0xFF3F6FC4)
+                    )
 
-                // Muestra el texto correspondiente al estado de la hora.
-                // Si todavía no se ha seleccionado, muestra "Seleccionar hora".
-                Text(
-                    text = if (horaTarea.isEmpty()) {
-                        "Seleccionar hora"
-                    } else {
-                        "Hora: $horaTarea"
+                    // Espacio entre el icono y el texto.
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    // Muestra el texto correspondiente al estado de la hora.
+                    // Si todavía no se ha seleccionado, muestra "Seleccionar hora".
+                    Text(
+                        text = if (horaTarea.isEmpty()) {
+                            "Seleccionar hora"
+                        } else {
+                            "Hora: $horaTarea"
+                        },
+                        fontSize = 14.sp
+                    )
+                }
+            }
+
+            // Muestra el selector de hora cuando el usuario pulsa el botón anterior.
+            if (mostrarSelectorHora) {
+                val calendario = Calendar.getInstance()
+
+                TimePickerDialog(
+                    LocalContext.current,
+                    { _, hora, minuto ->
+                        horaTarea = String.format("%02d:%02d", hora, minuto)
+                        mostrarSelectorHora = false
                     },
+                    calendario.get(Calendar.HOUR_OF_DAY),
+                    calendario.get(Calendar.MINUTE),
+                    true
+                ).show()
+            }
+
+            // Espacio entre el selector de hora y el botón para guardar la actividad.
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Botón que guarda la nueva actividad mediante el ViewModel.
+            Button(
+                onClick = {
+                    // Solo permite guardar si se ha escrito un título y seleccionado una hora.
+                    if (textoTarea.isNotBlank() && horaTarea.isNotBlank()) {
+                        agendaViewModel.agregarActividad(
+                            Actividad(
+                                // Room genera automáticamente el identificador.
+                                id = 0,
+                                // Guarda el título escrito por el usuario.
+                                titulo = textoTarea,
+                                // Guarda la fecha actual de la actividad.
+                                fecha = SimpleDateFormat(
+                                    "yyyy-MM-dd",
+                                    Locale.getDefault()
+                                ).format(Date()),
+                                // Guarda la hora seleccionada.
+                                hora = horaTarea
+                            )
+                        )
+                        // Limpia los campos después de guardar la actividad.
+                        textoTarea = ""
+                        horaTarea = ""
+                    }
+                },
+                // Define el tamaño y el ancho del botón.
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                // Aplica bordes redondeados al botón.
+                shape = RoundedCornerShape(24.dp)
+            ) {
+                // Texto mostrado dentro del botón.
+                Text(
+                    text = "Agregar Actividad",
                     fontSize = 14.sp
                 )
             }
-        }
-
-        // Muestra el selector de hora cuando el usuario pulsa el botón anterior.
-        if (mostrarSelectorHora) {
-            val calendario = Calendar.getInstance()
-
-            TimePickerDialog(
-                LocalContext.current,
-                { _, hora, minuto ->
-                    horaTarea = String.format("%02d:%02d", hora, minuto)
-                    mostrarSelectorHora = false
-                },
-                calendario.get(Calendar.HOUR_OF_DAY),
-                calendario.get(Calendar.MINUTE),
-                true
-            ).show()
-        }
-
-        // Espacio entre el selector de hora y el botón para guardar la actividad.
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Botón que guarda la nueva actividad mediante el ViewModel.
-        Button(
-            onClick = {
-                // Solo permite guardar si se ha escrito un título y seleccionado una hora.
-                if (textoTarea.isNotBlank() && horaTarea.isNotBlank()) {
-                    agendaViewModel.agregarActividad(
-                        Actividad(
-                            // Room genera automáticamente el identificador.
-                            id = 0,
-                            // Guarda el título escrito por el usuario.
-                            titulo = textoTarea,
-                            // Guarda la fecha actual de la actividad.
-                            fecha = SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault()
-                            ).format(Date()),
-                            // Guarda la hora seleccionada.
-                            hora = horaTarea
-                        )
-                    )
-                    // Limpia los campos después de guardar la actividad.
-                    textoTarea = ""
-                    horaTarea = ""
-                }
-            },
-            // Define el tamaño y el ancho del botón.
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            // Aplica bordes redondeados al botón.
-            shape = RoundedCornerShape(24.dp)
-        ) {
-            // Texto mostrado dentro del botón.
-            Text(
-                text = "Agregar Actividad",
-                fontSize = 14.sp
-            )
-        }
 
         }
         // Espacio entre la sección de creación y la lista de actividades.

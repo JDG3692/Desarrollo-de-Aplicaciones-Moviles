@@ -45,6 +45,9 @@ import com.example.agendapersonal.viewmodel.AgendaViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+
 
 @Composable
 fun CalendarioScreen(
@@ -103,31 +106,31 @@ fun CalendarioScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Regresar"
+                    contentDescription = "Volver",
                 )
             }
 
             // Título de la pantalla.
             Text(
                 text = "Calendario",
-                fontSize = 18.sp,
+                fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
         }
 
         Spacer(
-            modifier = Modifier.height(8.dp)
+            modifier = Modifier.height(12.dp)
         )
 
         // Selector de mes con los botones para navegar entre meses.
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(40.dp)
+                .height(50.dp)
                 .border(
                     width = 1.dp,
                     color = Color(0xFFD9E2F0),
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(12.dp)
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -145,7 +148,7 @@ fun CalendarioScreen(
                 Icon(
                     imageVector = Icons.Default.ChevronLeft,
                     contentDescription = "Mes anterior",
-                    modifier = Modifier.size(18.dp)
+                    tint = Color(0xFF3F6FC4)
                 )
             }
 
@@ -158,7 +161,7 @@ fun CalendarioScreen(
                     .replaceFirstChar { it.uppercase() },
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
-                fontSize = 12.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
 
@@ -175,13 +178,13 @@ fun CalendarioScreen(
                 Icon(
                     imageVector = Icons.Default.ChevronRight,
                     contentDescription = "Mes siguiente",
-                    modifier = Modifier.size(18.dp)
+                    tint = Color(0xFF3F6FC4)
                 )
             }
         }
-
+        //Espaciado de Mes a días
         Spacer(
-            modifier = Modifier.height(10.dp)
+            modifier = Modifier.height(20.dp)
         )
 
         // Muestra los nombres de los días de la semana.
@@ -190,28 +193,29 @@ fun CalendarioScreen(
         ) {
 
             listOf(
+                "Dom",
                 "Lun",
                 "Mar",
                 "Mié",
                 "Jue",
                 "Vie",
                 "Sáb",
-                "Dom"
-            ).forEach { dia ->
+
+                ).forEach { dia ->
 
                 // Nombre de cada día de la semana.
                 Text(
                     text = dia,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
-                    fontSize = 9.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
         }
 
         Spacer(
-            modifier = Modifier.height(3.dp)
+            modifier = Modifier.height(4.dp)
         )
 
         // Calcula la cantidad de días y la posición inicial del mes.
@@ -223,17 +227,8 @@ fun CalendarioScreen(
         val primerDiaSemana =
             calendario.get(Calendar.DAY_OF_WEEK)
 
-        // Convierte el primer día para que lunes sea la primera columna.
-        val desplazamiento = when (primerDiaSemana) {
-            Calendar.MONDAY -> 0
-            Calendar.TUESDAY -> 1
-            Calendar.WEDNESDAY -> 2
-            Calendar.THURSDAY -> 3
-            Calendar.FRIDAY -> 4
-            Calendar.SATURDAY -> 5
-            Calendar.SUNDAY -> 6
-            else -> 0
-        }
+        // Convierte el primer día para que domingo sea la primera columna.
+        val desplazamiento = primerDiaSemana - Calendar.SUNDAY
 
         // Crea la lista de días incluyendo los espacios iniciales.
         val dias = List(desplazamiento) { 0 } +
@@ -262,7 +257,7 @@ fun CalendarioScreen(
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .height(40.dp)
+                                .height(50.dp)
                                 .clickable(enabled = dia != 0) {
 
                                     // Guarda la fecha seleccionada por el usuario.
@@ -325,7 +320,7 @@ fun CalendarioScreen(
                                         // Número correspondiente al día.
                                         Text(
                                             text = dia.toString(),
-                                            fontSize = 11.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = if (esSeleccionado) {
                                                 FontWeight.Bold
                                             } else {
@@ -345,7 +340,7 @@ fun CalendarioScreen(
                                         Box(
                                             modifier = Modifier
                                                 .padding(top = 1.dp)
-                                                .size(4.dp)
+                                                .size(6.dp)
                                                 .background(
                                                     color = azulPrincipal,
                                                     shape = CircleShape
@@ -361,7 +356,7 @@ fun CalendarioScreen(
         }
 
         Spacer(
-            modifier = Modifier.height(12.dp)
+            modifier = Modifier.height(14.dp)
         )
 
         // Título de la sección de actividades.
@@ -385,8 +380,8 @@ fun CalendarioScreen(
         // Muestra la fecha seleccionada debajo del título.
         Text(
             text = fechaSeleccionadaTexto,
-            fontSize = 11.sp,
-            color = Color(0xFF777777)
+            fontSize = 16.sp,
+            color = Color(0xFF3F6FC4)
         )
 
         Spacer(
@@ -406,11 +401,12 @@ fun CalendarioScreen(
             }
             .sortedBy { it.hora }
 
+
         // Lista vertical de actividades del día.
         // Lista de actividades correspondientes al día seleccionado.
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
             // Comprueba si el día seleccionado no tiene actividades.
@@ -418,92 +414,123 @@ fun CalendarioScreen(
 
                 // Mensaje mostrado cuando no existen actividades para ese día.
                 Text(
-                    text = "No hay actividades para este día",
+                    text = "No hay actividades programadas para este día",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp),
                     textAlign = TextAlign.Center,
-                    fontSize = 12.sp,
+                    fontSize = 16.sp,
                     color = Color(0xFF777777)
                 )
 
             } else {
+                // Contenedor de las actividades con desplazamiento independiente.
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                ) {
 
-                // Recorre y muestra las actividades del día seleccionado.
-                actividadesDelDia.forEach { actividad ->
+                    // Recorre y muestra las actividades del día seleccionado.
+                    actividadesDelDia.forEach { actividad ->
 
-                    // Tarjeta visual de una actividad.
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(10.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White
-                        ),
-                        border = androidx.compose.foundation.BorderStroke(
-                            width = 1.dp,
-                            color = Color(0xFFD9E2F0)
-                        )
-                    ) {
-
-                        // Contenedor horizontal de la información de la actividad.
-                        Row(
+                        // Tarjeta visual que contiene la información de una actividad.
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(52.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White
+                            ),
+                            // Borde utilizado para separar visualmente la tarjeta del fondo.
+                            border = androidx.compose.foundation.BorderStroke(
+                                1.dp,
+                                Color(0xFFD9E2F2)
+                            )
                         ) {
 
-                            // Línea azul lateral que identifica la actividad.
-                            Box(
+                            // Organiza horizontalmente el contenido de la actividad.
+                            Row(
                                 modifier = Modifier
-                                    .width(3.dp)
-                                    .height(52.dp)
-                                    .background(
-                                        color = azulPrincipal,
-                                        shape = RoundedCornerShape(
-                                            topStart = 10.dp,
-                                            bottomStart = 10.dp
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                // Línea azul lateral que identifica la actividad en el calendario.
+                                Box(
+                                    modifier = Modifier
+                                        .width(6.dp)
+                                        .height(52.dp)
+                                        .background(
+                                            color = azulPrincipal,
+                                            shape = RoundedCornerShape(
+                                                topStart = 10.dp,
+                                                bottomStart = 10.dp
+                                            )
                                         )
+                                )
+
+                                // Columna que contiene la hora y el título de la actividad.
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 8.dp)
+                                ) {
+
+                                    // Muestra la hora de la actividad en formato de 12 horas.
+                                    // Si ocurre algún problema al convertirla, muestra la hora original.
+                                    Text(
+                                        text = try {
+                                            SimpleDateFormat(
+                                                "hh:mm a",
+                                                Locale.getDefault()
+                                            ).format(
+                                                SimpleDateFormat(
+                                                    "HH:mm",
+                                                    Locale.getDefault()
+                                                ).parse(actividad.hora)!!
+                                            )
+                                        } catch (e: Exception) {
+                                            actividad.hora
+                                        },
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Medium
                                     )
-                            )
 
-                            // Muestra la hora de la actividad.
-                            Text(
-                                text = actividad.hora,
-                                modifier = Modifier
-                                    .width(58.dp)
-                                    .padding(start = 10.dp),
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                                    // Muestra el título o descripción de la actividad.
+                                    Text(
+                                        text = actividad.titulo,
+                                        fontSize = 14.sp
+                                    )
+                                }
 
-                            // Muestra el título de la actividad.
-                            Text(
-                                text = actividad.titulo,
-                                modifier = Modifier.weight(1f),
-                                fontSize = 12.sp,
-                                color = Color(0xFF555555)
-                            )
+                                // Botón que representa el sonido de la actividad.
+                                IconButton(
+                                    onClick = { }
+                                ) {
+                                    // Icono de sonido siguiendo el formato utilizado en DiaScreen.
+                                    Icon(
+                                        imageVector = Icons.Default.VolumeUp,
+                                        contentDescription = "Sonido activado",
+                                        tint = azulPrincipal
+                                    )
+                                }
 
-                            // Icono que representa el sonido de la actividad.
-                            Icon(
-                                imageVector = Icons.Default.VolumeUp,
-                                contentDescription = "Sonido",
-                                tint = azulPrincipal,
-                                modifier = Modifier
-                                    .padding(end = 10.dp)
-                                    .size(18.dp)
-                            )
-
-                            // Icono que representa la notificación de la actividad.
-                            Icon(
-                                imageVector = Icons.Default.Notifications,
-                                contentDescription = "Notificación",
-                                tint = azulPrincipal,
-                                modifier = Modifier
-                                    .padding(end = 12.dp)
-                                    .size(18.dp)
-                            )
+                                // Botón que representa la notificación de la actividad.
+                                IconButton(
+                                    onClick = { }
+                                ) {
+                                    // Icono de notificación siguiendo el formato utilizado en DiaScreen.
+                                    Icon(
+                                        imageVector = Icons.Default.Notifications,
+                                        contentDescription = "Notificación activada",
+                                        tint = azulPrincipal
+                                    )
+                                }
+                            }
                         }
                     }
                 }
