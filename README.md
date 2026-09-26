@@ -192,3 +192,34 @@ Una vez finalizado el proyecto académico, se contempla la posibilidad de contin
 - Mejoras de diseño y accesibilidad.
 
 Estas funciones no forman parte del alcance inicial y se considerarían posteriormente de acuerdo con la evolución del proyecto.
+## 10. Registro de cambios (Changelog)
+
+### Cambios anteriores
+
+- Se definió la propuesta inicial de Agenda Personal y su objetivo principal.
+- Se diseñaron los wireframes de las principales pantallas y se estableció el flujo de navegación.
+- Se implementó la pantalla principal para consultar las actividades del día y registrar nuevas actividades.
+- Se agregó la navegación entre días.
+- Se incorporó la pantalla para programar actividades en fechas futuras.
+- Se implementó la persistencia de datos utilizando Room, incluyendo la entidad de actividades, el DAO y la base de datos.
+- Se incorporó un ViewModel para administrar el estado de las actividades y conectar la interfaz con la base de datos.
+- Se desarrolló la vista de calendario mensual para consultar las actividades organizadas por fecha.
+- Se realizaron ajustes visuales y funcionales en las pantallas para acercarlas a los wireframes definidos.
+
+### Cambios actuales — Módulo 5
+
+- Se consolidó la integración entre la interfaz y la base de datos local mediante Room.
+- Se mejoró la navegación entre días y meses para facilitar la consulta de actividades.
+- Se ajustó la presentación del calendario para identificar visualmente los días que contienen actividades.
+- Se actualizó la documentación del proyecto y los wireframes en el README.
+- Se mantiene como prioridad que la aplicación permita registrar y consultar actividades de manera sencilla.
+
+### Cambios futuros
+
+- Completar la edición y eliminación de actividades desde la interfaz.
+- Implementar completamente los recordatorios y las notificaciones.
+- Incorporar el comportamiento de sonido y notificación asociado a cada actividad.
+- Mejorar el manejo de actividades completadas y preparar su posible historial.
+- Realizar pruebas y correcciones antes de la entrega final.
+- Revisar la interfaz y realizar los ajustes finales de usabilidad.
+- Preparar la versión final del proyecto para el módulo 8.
