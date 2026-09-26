@@ -146,20 +146,30 @@ fun ProgramarActividadScreen(
         OutlinedButton(
             onClick = {
                 // Muestra el selector de fecha de Android.
+                // La fecha inicial será mañana porque no se permite programar para hoy.
+                val fechaMinima = Calendar.getInstance().apply {
+                    add(Calendar.DAY_OF_MONTH, 1)
+                }
+
+                // Crea el selector de fecha.
                 DatePickerDialog(
                     contexto,
                     { _, anio, mes, dia ->
 
                         // Crea un calendario con la fecha seleccionada.
-                        val fechaSeleccionada = Calendar.getInstance()
+                        val fechaSeleccionada = Calendar.getInstance().apply {
+                            set(
+                                anio,
+                                mes,
+                                dia,
+                                0,
+                                0,
+                                0
+                            )
+                            set(Calendar.MILLISECOND, 0)
+                        }
 
                         // Guarda la fecha seleccionada en formato yyyy-MM-dd.
-                        fechaSeleccionada.set(
-                            anio,
-                            mes,
-                            dia
-                        )
-
                         fechaTarea = SimpleDateFormat(
                             "yyyy-MM-dd",
                             Locale.getDefault()
@@ -167,11 +177,16 @@ fun ProgramarActividadScreen(
                             fechaSeleccionada.time
                         )
                     },
-                    // Utiliza la fecha actual como referencia inicial del selector.
-                    calendario.get(Calendar.YEAR),
-                    calendario.get(Calendar.MONTH),
-                    calendario.get(Calendar.DAY_OF_MONTH)
-                ).show()
+                    // El selector inicia mostrando mañana.
+                    fechaMinima.get(Calendar.YEAR),
+                    fechaMinima.get(Calendar.MONTH),
+                    fechaMinima.get(Calendar.DAY_OF_MONTH)
+                ).apply {
+
+                    // Impide seleccionar hoy o cualquier fecha anterior.
+                    datePicker.minDate = fechaMinima.timeInMillis
+
+                }.show()
             },
             modifier = Modifier.fillMaxWidth()
         ) {

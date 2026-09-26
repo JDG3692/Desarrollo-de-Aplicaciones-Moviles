@@ -47,6 +47,7 @@ import java.util.Calendar
 import java.util.Locale
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.Check
 
 
 @Composable
@@ -182,7 +183,7 @@ fun CalendarioScreen(
                 )
             }
         }
-        //Espaciado de Mes a días
+        // Espacio entre el selector de mes y los días de la semana.
         Spacer(
             modifier = Modifier.height(20.dp)
         )
@@ -402,7 +403,6 @@ fun CalendarioScreen(
             .sortedBy { it.hora }
 
 
-        // Lista vertical de actividades del día.
         // Lista de actividades correspondientes al día seleccionado.
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -434,6 +434,9 @@ fun CalendarioScreen(
 
                     // Recorre y muestra las actividades del día seleccionado.
                     actividadesDelDia.forEach { actividad ->
+
+                        // Comprueba si la actividad ya fue completada.
+                        val actividadCompletada = actividad.completada
 
                         // Tarjeta visual que contiene la información de una actividad.
                         Card(
@@ -507,28 +510,55 @@ fun CalendarioScreen(
                                     )
                                 }
 
-                                // Botón que representa el sonido de la actividad.
-                                IconButton(
-                                    onClick = { }
-                                ) {
-                                    // Icono de sonido siguiendo el formato utilizado en DiaScreen.
-                                    Icon(
-                                        imageVector = Icons.Default.VolumeUp,
-                                        contentDescription = "Sonido activado",
-                                        tint = azulPrincipal
-                                    )
-                                }
+                                // Muestra el estado de la actividad.
+                                // Las actividades completadas muestran un check y el texto "Completada".
+                                // Las actividades pendientes mantienen los controles de sonido y notificación.
+                                if (actividadCompletada) {
 
-                                // Botón que representa la notificación de la actividad.
-                                IconButton(
-                                    onClick = { }
-                                ) {
-                                    // Icono de notificación siguiendo el formato utilizado en DiaScreen.
-                                    Icon(
-                                        imageVector = Icons.Default.Notifications,
-                                        contentDescription = "Notificación activada",
-                                        tint = azulPrincipal
-                                    )
+                                    // Muestra el indicador de actividad completada.
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Check,
+                                            contentDescription = "Actividad completada",
+                                            tint = azulPrincipal
+                                        )
+
+                                        Text(
+                                            text = "Completada",
+                                            modifier = Modifier.padding(start = 4.dp),
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = azulPrincipal
+                                        )
+                                    }
+
+                                } else {
+
+                                    // Botón que representa el sonido de la actividad pendiente.
+                                    IconButton(
+                                        onClick = { }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.VolumeUp,
+                                            contentDescription = "Sonido activado",
+                                            tint = azulPrincipal
+                                        )
+                                    }
+
+                                    // Botón que representa la notificación de la actividad pendiente.
+                                    IconButton(
+                                        onClick = { }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Notifications,
+                                            contentDescription = "Notificación activada",
+                                            tint = azulPrincipal
+                                        )
+                                    }
+
                                 }
                             }
                         }
