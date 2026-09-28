@@ -60,4 +60,22 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
     }
+    // Cambia el estado de la alarma de una actividad.
+    // Si estaba activa, la silencia; si estaba silenciada, la activa.
+    fun cambiarEstadoAlarma(id: Int) {
+        viewModelScope.launch {
+            // Busca la actividad correspondiente dentro de la lista actual.
+            val actividad = actividades.value.find { it.id == id }
+
+            // Solo actualiza la actividad si fue encontrada.
+            if (actividad != null) {
+                // Invierte el estado actual de la alarma y guarda el cambio.
+                actividadDao.actualizarActividad(
+                    actividad.copy(
+                        alarmaActiva = !actividad.alarmaActiva
+                    )
+                )
+            }
+        }
+    }
 }

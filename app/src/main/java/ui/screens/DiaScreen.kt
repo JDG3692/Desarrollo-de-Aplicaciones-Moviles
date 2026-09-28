@@ -43,10 +43,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.NotificationsOff
-import androidx.compose.material.icons.filled.VolumeOff
-import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material.icons.filled.AlarmOff
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.ui.res.painterResource
@@ -76,11 +74,6 @@ fun DiaScreen(
 // Controla si se debe mostrar el selector de hora.
     var mostrarSelectorHora by remember { mutableStateOf(false) }
 
-// Guarda temporalmente las actividades que tienen el sonido activado.
-    var actividadesConSonido by remember { mutableStateOf(setOf<Int>()) }
-
-// Guarda temporalmente las actividades que tienen las notificaciones activadas.
-    var actividadesConNotificacion by remember { mutableStateOf(setOf<Int>()) }
 
 // Obtiene la fecha actual del dispositivo.
     val calendarioActual = Calendar.getInstance()
@@ -104,13 +97,6 @@ fun DiaScreen(
 // Observa las actividades almacenadas en Room.
     val actividades by agendaViewModel.actividades.collectAsState()
 
-// Inicializa los estados temporales de sonido y notificación para las actividades existentes.
-    LaunchedEffect(actividades) {
-        val ids = actividades.map { it.id }.toSet()
-
-        actividadesConNotificacion = ids
-        actividadesConSonido = ids
-    }
     // Contenedor principal de la pantalla.
     // Ocupa el espacio disponible, permite desplazamiento vertical
     // y aplica un margen interno de 24 dp.
@@ -481,71 +467,22 @@ fun DiaScreen(
                                 fontSize = 14.sp
                             )
                         }
-                        // Botón para activar o desactivar el sonido de la actividad.
+                        // Permite activar o silenciar la alarma de esta actividad.
                         IconButton(
                             onClick = {
-                                actividadesConSonido =
-                                    if (actividad.id in actividadesConSonido) {
-                                        // Si estaba activado, elimina el ID del conjunto.
-                                        actividadesConSonido - actividad.id
-                                    } else {
-                                        // Si estaba desactivado, agrega el ID al conjunto.
-                                        actividadesConSonido + actividad.id
-                                    }
+                                agendaViewModel.cambiarEstadoAlarma(actividad.id)
                             }
                         ) {
-                            // Cambia el icono dependiendo de si el sonido está activo.
                             Icon(
-                                imageVector = if (actividad.id in actividadesConSonido) {
-                                    Icons.Default.VolumeUp
+                                imageVector = if (actividad.alarmaActiva) {
+                                    Icons.Default.Alarm
                                 } else {
-                                    Icons.Default.VolumeOff
+                                    Icons.Default.AlarmOff
                                 },
-                                // Descripción accesible del estado del sonido.
-                                contentDescription = if (actividad.id in actividadesConSonido) {
-                                    "Sonido activado"
+                                contentDescription = if (actividad.alarmaActiva) {
+                                    "Alarma activada"
                                 } else {
-                                    "Sonido desactivado"
-                                },
-                                // Cambia el color según el estado del sonido.
-                                tint = if (actividad.id in actividadesConSonido) {
-                                    Color(0xFF3F6FC4)
-                                } else {
-                                    Color.Gray
-                                }
-                            )
-                        }
-                        // Botón para activar o desactivar las notificaciones de la actividad.
-                        IconButton(
-                            onClick = {
-                                actividadesConNotificacion =
-                                    if (actividad.id in actividadesConNotificacion) {
-                                        // Si estaba activada, elimina el ID del conjunto.
-                                        actividadesConNotificacion - actividad.id
-                                    } else {
-                                        // Si estaba desactivada, agrega el ID al conjunto.
-                                        actividadesConNotificacion + actividad.id
-                                    }
-                            }
-                        ) {
-                            // Cambia el icono dependiendo del estado de la notificación.
-                            Icon(
-                                imageVector = if (actividad.id in actividadesConNotificacion) {
-                                    Icons.Default.Notifications
-                                } else {
-                                    Icons.Default.NotificationsOff
-                                },
-                                // Descripción accesible del estado de la notificación.
-                                contentDescription = if (actividad.id in actividadesConNotificacion) {
-                                    "Notificación activada"
-                                } else {
-                                    "Notificación desactivada"
-                                },
-                                // Cambia el color según el estado de la notificación.
-                                tint = if (actividad.id in actividadesConNotificacion) {
-                                    Color(0xFF3F6FC4)
-                                } else {
-                                    Color.Gray
+                                    "Alarma silenciada"
                                 }
                             )
                         }

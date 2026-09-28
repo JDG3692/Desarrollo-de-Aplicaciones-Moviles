@@ -10,5 +10,7 @@ data class Actividad(
     val titulo: String,
     val fecha: String,
     val hora: String,
-    val completada: Boolean = false
+    val completada: Boolean = false,
+    // Indica si la alarma de esta actividad está activa.
+    val alarmaActiva: Boolean = true
 )

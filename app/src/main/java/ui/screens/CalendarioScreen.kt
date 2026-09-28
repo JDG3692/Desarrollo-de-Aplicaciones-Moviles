@@ -20,8 +20,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material.icons.filled.AlarmOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -48,6 +48,8 @@ import java.util.Locale
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Check
+import java.util.Date
+import androidx.compose.material.icons.filled.Close
 
 
 @Composable
@@ -438,6 +440,32 @@ fun CalendarioScreen(
                         // Comprueba si la actividad ya fue completada.
                         val actividadCompletada = actividad.completada
 
+                        // Convierte la fecha de la actividad para comprobar si ya pasó.
+                        // La comparación se realiza solamente por fecha, no por hora.
+                        val fechaActividad = try {
+                            SimpleDateFormat(
+                                "yyyy-MM-dd",
+                                Locale.getDefault()
+                            ).parse(actividad.fecha)
+                        } catch (e: Exception) {
+                            null
+                        }
+
+                        // Obtiene la fecha actual sin considerar la hora.
+                        val fechaHoy = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 0)
+                            set(Calendar.MINUTE, 0)
+                            set(Calendar.SECOND, 0)
+                            set(Calendar.MILLISECOND, 0)
+                        }.time
+
+                        // Una actividad no completada queda marcada como "No completada"
+                        // cuando su fecha ya pasó.
+                        val actividadNoCompletada =
+                            !actividadCompletada &&
+                                    fechaActividad != null &&
+                                    fechaActividad.before(fechaHoy)
+
                         // Tarjeta visual que contiene la información de una actividad.
                         Card(
                             modifier = Modifier
@@ -520,45 +548,67 @@ fun CalendarioScreen(
                                         verticalAlignment = Alignment.CenterVertically,
                                         modifier = Modifier.padding(end = 8.dp)
                                     ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Check,
-                                            contentDescription = "Actividad completada",
-                                            tint = azulPrincipal
-                                        )
 
                                         Text(
-                                            text = "Completada",
+                                            text = "Completada ",
                                             modifier = Modifier.padding(start = 4.dp),
                                             fontSize = 12.sp,
                                             fontWeight = FontWeight.Medium,
                                             color = azulPrincipal
                                         )
+                                        Icon(
+                                            imageVector = Icons.Default.Check,
+                                            contentDescription = "Actividad completada",
+                                            tint = Color.Green
+                                        )
+                                    }
+
+                                } else if (actividadNoCompletada) {
+
+                                    // Muestra el estado de una actividad cuya fecha ya pasó sin completarse.
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    ) {
+
+                                        // Icono que indica que la actividad no fue completada.
+                                        Text(
+                                            text = "No completada ",
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = azulPrincipal
+                                        )
+
+                                        Icon(
+                                            imageVector = Icons.Default.Close,
+                                            contentDescription = "Actividad no completada",
+                                            modifier = Modifier.padding(start = 4.dp),
+                                            tint = Color.Red
+                                        )
                                     }
 
                                 } else {
 
-                                    // Botón que representa el sonido de la actividad pendiente.
+                                    // Botón que permite activar o silenciar la alarma de la actividad.
                                     IconButton(
-                                        onClick = { }
+                                        onClick = {
+                                            agendaViewModel.cambiarEstadoAlarma(actividad.id)
+                                        }
                                     ) {
                                         Icon(
-                                            imageVector = Icons.Default.VolumeUp,
-                                            contentDescription = "Sonido activado",
+                                            imageVector = if (actividad.alarmaActiva) {
+                                                Icons.Default.Alarm
+                                            } else {
+                                                Icons.Default.AlarmOff
+                                            },
+                                            contentDescription = if (actividad.alarmaActiva) {
+                                                "Alarma activada"
+                                            } else {
+                                                "Alarma silenciada"
+                                            },
                                             tint = azulPrincipal
                                         )
                                     }
-
-                                    // Botón que representa la notificación de la actividad pendiente.
-                                    IconButton(
-                                        onClick = { }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Notifications,
-                                            contentDescription = "Notificación activada",
-                                            tint = azulPrincipal
-                                        )
-                                    }
-
                                 }
                             }
                         }
