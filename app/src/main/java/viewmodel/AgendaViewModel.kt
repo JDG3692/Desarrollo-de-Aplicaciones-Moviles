@@ -60,6 +60,7 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
     }
+
     // Cambia el estado de la alarma de una actividad.
     // Si estaba activa, la silencia; si estaba silenciada, la activa.
     fun cambiarEstadoAlarma(id: Int) {

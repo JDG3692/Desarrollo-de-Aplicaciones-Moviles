@@ -486,7 +486,9 @@ fun CalendarioScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
+                                    .padding(vertical = 4.dp,
+                                     horizontal = 4.dp
+                                    ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
 
@@ -508,7 +510,7 @@ fun CalendarioScreen(
                                 Column(
                                     modifier = Modifier
                                         .weight(1f)
-                                        .padding(start = 8.dp)
+                                        .padding(start = 12.dp)
                                 ) {
 
                                     // Muestra la hora de la actividad en formato de 12 horas.
@@ -527,14 +529,17 @@ fun CalendarioScreen(
                                         } catch (e: Exception) {
                                             actividad.hora
                                         },
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Medium
+                                        fontSize = 12.sp,
+                                        color = azulPrincipal,
+                                        fontWeight = FontWeight.SemiBold
                                     )
 
-                                    // Muestra el título o descripción de la actividad.
+                                    // Muestra el título o descripción como elemento principal.
                                     Text(
                                         text = actividad.titulo,
-                                        fontSize = 14.sp
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        modifier = Modifier.padding(top = 2.dp)
                                     )
                                 }
 
@@ -546,7 +551,7 @@ fun CalendarioScreen(
                                     // Muestra el indicador de actividad completada.
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.padding(end = 8.dp)
+                                        modifier = Modifier.padding(end = 12.dp)
                                     ) {
 
                                         Text(

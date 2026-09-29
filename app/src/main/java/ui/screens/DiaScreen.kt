@@ -52,6 +52,9 @@ import com.example.agendapersonal.R
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+
 
 
 // Pantalla principal de la agenda diaria.
@@ -82,20 +85,21 @@ fun DiaScreen(
     var fechaConsultada by remember {
         mutableStateOf(
             SimpleDateFormat(
-                "yyyy-MM-dd",
-                Locale.getDefault()
+                "yyyy-MM-dd", Locale.getDefault()
             ).format(calendarioActual.time)
         )
     }
 
 // Obtiene la fecha de hoy para determinar cuándo mostrar las opciones de creación.
     val fechaHoy = SimpleDateFormat(
-        "yyyy-MM-dd",
-        Locale.getDefault()
+        "yyyy-MM-dd", Locale.getDefault()
     ).format(Date())
 
 // Observa las actividades almacenadas en Room.
     val actividades by agendaViewModel.actividades.collectAsState()
+
+    // Color principal utilizado para los elementos destacados de la aplicación.
+    val azulPrincipal = Color(0xFF3F6FC4)
 
     // Contenedor principal de la pantalla.
     // Ocupa el espacio disponible, permite desplazamiento vertical
@@ -111,15 +115,11 @@ fun DiaScreen(
 
         // Texto de bienvenida mostrado en la parte superior.
         Text(
-            text = "Bienvenido a tu",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold
+            text = "Bienvenido a tu", fontSize = 28.sp, fontWeight = FontWeight.Bold
         )
         // Nombre principal de la aplicación.
         Text(
-            text = "Agenda Personal",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold
+            text = "Agenda Personal", fontSize = 32.sp, fontWeight = FontWeight.Bold
         )
         // Espacio entre el encabezado y la información de la fecha.
         Spacer(modifier = Modifier.height(20.dp))
@@ -127,15 +127,12 @@ fun DiaScreen(
         // Muestra "Hoy es" únicamente cuando se está consultando la fecha actual.
         if (fechaConsultada == fechaHoy) {
             Text(
-                text = "Hoy es",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 4.dp)
+                text = "Hoy es", fontSize = 16.sp, modifier = Modifier.padding(bottom = 4.dp)
             )
         }
         // Selector de fecha que permite consultar el día anterior, el día actual o días posteriores.
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
             // Botón para consultar el día anterior.
             IconButton(
@@ -144,8 +141,7 @@ fun DiaScreen(
 
                     // Convierte la fecha consultada de texto a un objeto Calendar.
                     calendario.time = SimpleDateFormat(
-                        "yyyy-MM-dd",
-                        Locale.getDefault()
+                        "yyyy-MM-dd", Locale.getDefault()
                     ).parse(fechaConsultada)!!
 
                     // Retrocede un día en el calendario.
@@ -153,11 +149,9 @@ fun DiaScreen(
 
                     // Guarda nuevamente la fecha consultada en formato yyyy-MM-dd.
                     fechaConsultada = SimpleDateFormat(
-                        "yyyy-MM-dd",
-                        Locale.getDefault()
+                        "yyyy-MM-dd", Locale.getDefault()
                     ).format(calendario.time)
-                },
-                modifier = Modifier.width(48.dp)
+                }, modifier = Modifier.width(48.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.ChevronLeft,
@@ -176,12 +170,10 @@ fun DiaScreen(
                 // Muestra el nombre del día de la semana.
                 Text(
                     text = SimpleDateFormat(
-                        "EEEE",
-                        Locale("es", "CO")
+                        "EEEE", Locale("es", "CO")
                     ).format(
                         SimpleDateFormat(
-                            "yyyy-MM-dd",
-                            Locale.getDefault()
+                            "yyyy-MM-dd", Locale.getDefault()
                         ).parse(fechaConsultada)!!
                     ).uppercase(),
                     modifier = Modifier.fillMaxWidth(),
@@ -193,12 +185,10 @@ fun DiaScreen(
                 // Muestra la fecha completa que está siendo consultada.
                 Text(
                     text = SimpleDateFormat(
-                        "d 'de' MMMM 'de' yyyy",
-                        Locale("es", "CO")
+                        "d 'de' MMMM 'de' yyyy", Locale("es", "CO")
                     ).format(
                         SimpleDateFormat(
-                            "yyyy-MM-dd",
-                            Locale.getDefault()
+                            "yyyy-MM-dd", Locale.getDefault()
                         ).parse(fechaConsultada)!!
                     ),
                     modifier = Modifier.fillMaxWidth(),
@@ -216,8 +206,7 @@ fun DiaScreen(
 
                     // Convierte la fecha consultada de texto a un objeto Calendar.
                     calendario.time = SimpleDateFormat(
-                        "yyyy-MM-dd",
-                        Locale.getDefault()
+                        "yyyy-MM-dd", Locale.getDefault()
                     ).parse(fechaConsultada)!!
 
                     // Avanza un día en el calendario.
@@ -225,8 +214,7 @@ fun DiaScreen(
 
                     // Guarda nuevamente la fecha consultada en formato yyyy-MM-dd.
                     fechaConsultada = SimpleDateFormat(
-                        "yyyy-MM-dd",
-                        Locale.getDefault()
+                        "yyyy-MM-dd", Locale.getDefault()
                     ).format(calendario.time)
                 },
                 // Define el ancho del botón de navegación.
@@ -249,9 +237,7 @@ fun DiaScreen(
 
             // Título de la sección de creación de actividades.
             Text(
-                text = "Nueva actividad",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
+                text = "Nueva actividad", fontSize = 22.sp, fontWeight = FontWeight.Bold
             )
             // Espacio entre el título y el campo de texto.
             Spacer(modifier = Modifier.height(12.dp))
@@ -308,8 +294,7 @@ fun DiaScreen(
                             "Seleccionar hora"
                         } else {
                             "Hora: $horaTarea"
-                        },
-                        fontSize = 14.sp
+                        }, fontSize = 14.sp
                     )
                 }
             }
@@ -319,14 +304,10 @@ fun DiaScreen(
                 val calendario = Calendar.getInstance()
 
                 TimePickerDialog(
-                    LocalContext.current,
-                    { _, hora, minuto ->
+                    LocalContext.current, { _, hora, minuto ->
                         horaTarea = String.format("%02d:%02d", hora, minuto)
                         mostrarSelectorHora = false
-                    },
-                    calendario.get(Calendar.HOUR_OF_DAY),
-                    calendario.get(Calendar.MINUTE),
-                    true
+                    }, calendario.get(Calendar.HOUR_OF_DAY), calendario.get(Calendar.MINUTE), true
                 ).show()
             }
 
@@ -346,8 +327,7 @@ fun DiaScreen(
                                 titulo = textoTarea,
                                 // Guarda la fecha actual de la actividad.
                                 fecha = SimpleDateFormat(
-                                    "yyyy-MM-dd",
-                                    Locale.getDefault()
+                                    "yyyy-MM-dd", Locale.getDefault()
                                 ).format(Date()),
                                 // Guarda la hora seleccionada.
                                 hora = horaTarea
@@ -367,8 +347,7 @@ fun DiaScreen(
             ) {
                 // Texto mostrado dentro del botón.
                 Text(
-                    text = "Agregar Actividad",
-                    fontSize = 14.sp
+                    text = "Agregar Actividad", fontSize = 14.sp
                 )
             }
 
@@ -383,28 +362,45 @@ fun DiaScreen(
                 "Actividades para hoy"
             } else {
                 "Actividades para este día"
-            },
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
+            }, fontSize = 22.sp, fontWeight = FontWeight.Bold
         )
         // Espacio entre el título y la lista de actividades.
         Spacer(modifier = Modifier.height(12.dp))
 
         // Obtiene las actividades correspondientes a la fecha consultada.
         actividades
-            .filter { actividad ->
-                // Para días anteriores se muestran las actividades completadas.
-                // Para hoy y días posteriores se muestran las actividades pendientes.
-                if (fechaConsultada < fechaHoy) {
-                    actividad.fecha == fechaConsultada && actividad.completada
-                } else {
-                    actividad.fecha == fechaConsultada && !actividad.completada
-                }
+        actividades.filter { actividad ->
+                actividad.fecha == fechaConsultada
             }
             // Ordena las actividades de acuerdo con su hora.
             .sortedBy { it.hora }
             // Recorre cada actividad para construir su tarjeta.
             .forEach { actividad ->
+                // Comprueba si la actividad ya fue completada.
+                val actividadCompletada = actividad.completada
+
+                // Convierte la fecha de la actividad para comprobar si ya pasó.
+                val fechaActividad = try {
+                    SimpleDateFormat(
+                        "yyyy-MM-dd", Locale.getDefault()
+                    ).parse(actividad.fecha)
+                } catch (e: Exception) {
+                    null
+                }
+
+                // Obtiene la fecha actual sin considerar la hora.
+                val fechaHoyCalendario = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }.time
+
+                // Una actividad no completada queda vencida cuando su fecha ya pasó.
+                val actividadNoCompletada =
+                    !actividadCompletada && fechaActividad != null && fechaActividad.before(
+                        fechaHoyCalendario
+                    )
                 // Tarjeta visual que contiene la información de una actividad.
                 Card(
                     modifier = Modifier
@@ -416,8 +412,7 @@ fun DiaScreen(
                     ),
                     // Borde utilizado para separar visualmente la tarjeta del fondo.
                     border = androidx.compose.foundation.BorderStroke(
-                        1.dp,
-                        Color(0xFFD9E2F2)
+                        1.dp, Color(0xFFD9E2F2)
                     )
                 ) {
                     // Organiza horizontalmente el contenido de la actividad.
@@ -429,12 +424,10 @@ fun DiaScreen(
                     ) {
                         // Casilla que indica si la actividad está completada.
                         Checkbox(
-                            checked = actividad.completada,
-                            onCheckedChange = {
+                            checked = actividad.completada, onCheckedChange = {
                                 // Marca la actividad como completada mediante el ViewModel
                                 agendaViewModel.completarActividad(actividad.id)
-                            }
-                        )
+                            })
 
                         // Columna que contiene la hora y el título de la actividad.
                         // weight(1f) permite que ocupe el espacio disponible entre los iconos.
@@ -447,44 +440,87 @@ fun DiaScreen(
                             Text(
                                 text = try {
                                     SimpleDateFormat(
-                                        "hh:mm a",
-                                        Locale.getDefault()
+                                        "hh:mm a", Locale.getDefault()
                                     ).format(
                                         SimpleDateFormat(
-                                            "HH:mm",
-                                            Locale.getDefault()
+                                            "HH:mm", Locale.getDefault()
                                         ).parse(actividad.hora)!!
                                     )
                                 } catch (e: Exception) {
                                     actividad.hora
                                 },
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium
+                                fontSize = 12.sp,
+                                color = azulPrincipal,
+                                fontWeight = FontWeight.SemiBold
                             )
-                            // Muestra el título o descripción de la actividad.
+                            // Muestra el título o descripción como elemento principal.
                             Text(
                                 text = actividad.titulo,
-                                fontSize = 14.sp
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.padding(top = 2.dp)
                             )
                         }
-                        // Permite activar o silenciar la alarma de esta actividad.
-                        IconButton(
-                            onClick = {
-                                agendaViewModel.cambiarEstadoAlarma(actividad.id)
+                        // Muestra un estado diferente según la situación de la actividad.
+                        if (actividadCompletada) {
+
+                            // Actividad que ya fue completada.
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Completada",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = azulPrincipal
+                                )
+
+                                // Icono que identifica una actividad completada.
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = "Actividad completada",
+                                    modifier = Modifier.padding(start = 4.dp),
+                                    tint = Color.Green
+                                )
                             }
-                        ) {
-                            Icon(
-                                imageVector = if (actividad.alarmaActiva) {
-                                    Icons.Default.Alarm
-                                } else {
-                                    Icons.Default.AlarmOff
-                                },
-                                contentDescription = if (actividad.alarmaActiva) {
-                                    "Alarma activada"
-                                } else {
-                                    "Alarma silenciada"
-                                }
-                            )
+
+                        } else if (actividadNoCompletada) {
+
+                            // Actividad cuya fecha ya pasó y no fue completada.
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "No completada",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = azulPrincipal
+                                )
+
+                                // Icono que identifica una actividad no completada.
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Actividad no completada",
+                                    modifier = Modifier.padding(start = 4.dp),
+                                    tint = Color.Red
+                                )
+                            }
+
+                        } else {
+
+                            // Actividad pendiente cuya fecha todavía no ha pasado.
+                            IconButton(
+                                onClick = {
+                                    agendaViewModel.cambiarEstadoAlarma(actividad.id)
+                                }) {
+                                Icon(
+                                    imageVector = if (actividad.alarmaActiva) Icons.Default.Alarm
+                                    else Icons.Default.AlarmOff,
+                                    contentDescription = if (actividad.alarmaActiva) "Alarma activada"
+                                    else "Alarma silenciada",
+                                    tint = azulPrincipal
+                                )
+                            }
                         }
                     }
                 }
@@ -494,8 +530,7 @@ fun DiaScreen(
 
         // Fila que contiene los botones para acceder a otras funciones de la aplicación
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // El botón "Programar actividad" solo se muestra cuando se consulta el día actual.
             if (fechaConsultada == fechaHoy) {
@@ -538,8 +573,7 @@ fun DiaScreen(
 
                 modifier = Modifier
                     .weight(1f)
-                    .height(52.dp),
-                shape = RoundedCornerShape(12.dp)
+                    .height(52.dp), shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -555,9 +589,7 @@ fun DiaScreen(
 
                     // Texto del botón para abrir el calendario.
                     Text(
-                        text = "Calendario",
-                        fontSize = 12.sp,
-                        color = Color.White
+                        text = "Calendario", fontSize = 12.sp, color = Color.White
                     )
                 }
             }
