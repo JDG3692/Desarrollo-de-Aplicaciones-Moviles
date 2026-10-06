@@ -55,7 +55,8 @@ import androidx.compose.material.icons.filled.Close
 @Composable
 fun CalendarioScreen(
     agendaViewModel: AgendaViewModel = viewModel(),
-    onVolver: () -> Unit = {}
+    onVolver: () -> Unit = {},
+    onEditarActividad: (Int) -> Unit = {}
 ) {
 
     // Guarda el mes que actualmente está mostrando el calendario.
@@ -468,6 +469,10 @@ fun CalendarioScreen(
 
                         // Tarjeta visual que contiene la información de una actividad.
                         Card(
+                            onClick = {
+                                // Abre la pantalla de edición de la actividad seleccionada.
+                                onEditarActividad(actividad.id)
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp),

@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.agendapersonal.ui.screens.DiaScreen
 import com.example.agendapersonal.ui.screens.ProgramarActividadScreen
 import com.example.agendapersonal.ui.screens.CalendarioScreen
+import com.example.agendapersonal.ui.screens.EditarActividadScreen
 
 // Define la navegación principal de la aplicación.
 // Se encarga de controlar las diferentes pantallas y el cambio entre ellas.
@@ -30,6 +31,10 @@ fun AppNavigation() {
                 // Navega desde la pantalla diaria hacia el Calendario.
                 onAbrirCalendario = {
                     navController.navigate("calendario")
+                },
+                // Abre la edición de la actividad seleccionada.
+                onEditarActividad = { actividadId ->
+                    navController.navigate("editar/$actividadId")
                 }
             )
         }
@@ -48,8 +53,33 @@ fun AppNavigation() {
                 // Regresa a la pantalla anterior de la navegación.
                 onVolver = {
                     navController.popBackStack()
+                },
+                // Abre la edición de la actividad seleccionada.
+                onEditarActividad = { actividadId ->
+                    navController.navigate("editar/$actividadId")
                 }
             )
+        }
+
+        // Ruta para editar una actividad existente.
+        // Recibe el identificador de la actividad desde la pantalla anterior.
+        composable("editar/{actividadId}") { backStackEntry ->
+
+            // Obtiene el ID de la actividad enviado mediante la navegación.
+            val actividadId = backStackEntry
+                .arguments
+                ?.getString("actividadId")
+                ?.toIntOrNull()
+
+            // Solo abre la pantalla si el ID recibido es válido.
+            if (actividadId != null) {
+                EditarActividadScreen(
+                    actividadId = actividadId,
+                    onVolver = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
     }
 }

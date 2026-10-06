@@ -79,4 +79,19 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
     }
+    // Actualiza una actividad existente en la base de datos.
+    fun actualizarActividad(actividad: Actividad) {
+        // Ejecuta la actualización en una corrutina.
+        viewModelScope.launch {
+            actividadDao.actualizarActividad(actividad)
+        }
+    }
+
+    // Elimina una actividad de la base de datos.
+    fun eliminarActividad(actividad: Actividad) {
+        // Ejecuta la eliminación en una corrutina.
+        viewModelScope.launch {
+            actividadDao.eliminarActividad(actividad)
+        }
+    }
 }

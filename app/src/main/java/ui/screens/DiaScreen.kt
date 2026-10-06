@@ -42,7 +42,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.AlarmOff
 import androidx.compose.material.icons.filled.AccessTime
@@ -57,6 +56,7 @@ import androidx.compose.material.icons.filled.Close
 
 
 
+
 // Pantalla principal de la agenda diaria.
 // Recibe el ViewModel para acceder a las actividades guardadas.
 // onProgramarActividad permite navegar a la pantalla para programar una actividad.
@@ -65,7 +65,8 @@ import androidx.compose.material.icons.filled.Close
 fun DiaScreen(
     agendaViewModel: AgendaViewModel = viewModel(),
     onProgramarActividad: () -> Unit = {},
-    onAbrirCalendario: () -> Unit = {}
+    onAbrirCalendario: () -> Unit = {},
+    onEditarActividad: (Int) -> Unit = {}
 ) {
 
     // Guarda el texto que el usuario escribe al crear una actividad.
@@ -403,6 +404,10 @@ fun DiaScreen(
                     )
                 // Tarjeta visual que contiene la información de una actividad.
                 Card(
+                    onClick = {
+                        // Abre la pantalla de edición de la actividad seleccionada.
+                        onEditarActividad(actividad.id)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp),
