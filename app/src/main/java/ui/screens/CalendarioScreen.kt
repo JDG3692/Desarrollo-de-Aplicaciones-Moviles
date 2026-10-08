@@ -50,6 +50,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Check
 import java.util.Date
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 
 
 @Composable
@@ -71,6 +73,10 @@ fun CalendarioScreen(
     // Guarda la fecha que el usuario tiene seleccionada.
     var fechaSeleccionada by remember {
         mutableStateOf(Calendar.getInstance())
+    }
+    // Controla si se muestra el aviso cuando se intenta editar una actividad completada.
+    var mostrarAvisoActividadCompletada by remember {
+        mutableStateOf(false)
     }
 
     // Obtiene las actividades almacenadas en Room.
@@ -470,8 +476,13 @@ fun CalendarioScreen(
                         // Tarjeta visual que contiene la información de una actividad.
                         Card(
                             onClick = {
-                                // Abre la pantalla de edición de la actividad seleccionada.
-                                onEditarActividad(actividad.id)
+                                // Las actividades completadas no se pueden editar.
+                                if (actividad.completada) {
+                                    mostrarAvisoActividadCompletada = true
+                                } else {
+                                    // Las actividades pendientes sí pueden abrirse para editar.
+                                    onEditarActividad(actividad.id)
+                                }
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -626,5 +637,32 @@ fun CalendarioScreen(
                 }
             }
         }
+
+        // Muestra un aviso cuando se intenta editar una actividad completada.
+        if (mostrarAvisoActividadCompletada) {
+            AlertDialog(
+                onDismissRequest = {
+                    mostrarAvisoActividadCompletada = false
+                },
+                title = {
+                    Text("Actividad completada")
+                },
+                text = {
+                    Text("Las actividades completadas no se pueden editar.")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            mostrarAvisoActividadCompletada = false
+                        }
+                    ) {
+                        Text("Aceptar")
+                    }
+                }
+            )
+        }
     }
 }
+
+
+

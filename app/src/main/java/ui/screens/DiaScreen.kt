@@ -53,6 +53,7 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.AlertDialog
 
 
 
@@ -72,17 +73,17 @@ fun DiaScreen(
     // Guarda el texto que el usuario escribe al crear una actividad.
     var textoTarea by remember { mutableStateOf("") }
 
-// Guarda la hora seleccionada para la nueva actividad.
+    // Guarda la hora seleccionada para la nueva actividad.
     var horaTarea by remember { mutableStateOf("") }
 
-// Controla si se debe mostrar el selector de hora.
+    // Controla si se debe mostrar el selector de hora.
     var mostrarSelectorHora by remember { mutableStateOf(false) }
 
 
-// Obtiene la fecha actual del dispositivo.
+    // Obtiene la fecha actual del dispositivo.
     val calendarioActual = Calendar.getInstance()
 
-// Guarda la fecha que el usuario está consultando en la pantalla.
+    // Guarda la fecha que el usuario está consultando en la pantalla.
     var fechaConsultada by remember {
         mutableStateOf(
             SimpleDateFormat(
@@ -90,13 +91,17 @@ fun DiaScreen(
             ).format(calendarioActual.time)
         )
     }
+    // Controla si se muestra el aviso cuando se intenta editar una actividad completada.
+    var mostrarAvisoActividadCompletada by remember {
+        mutableStateOf(false)
+    }
 
-// Obtiene la fecha de hoy para determinar cuándo mostrar las opciones de creación.
+    // Obtiene la fecha de hoy para determinar cuándo mostrar las opciones de creación.
     val fechaHoy = SimpleDateFormat(
         "yyyy-MM-dd", Locale.getDefault()
     ).format(Date())
 
-// Observa las actividades almacenadas en Room.
+    // Observa las actividades almacenadas en Room.
     val actividades by agendaViewModel.actividades.collectAsState()
 
     // Color principal utilizado para los elementos destacados de la aplicación.
@@ -405,8 +410,13 @@ fun DiaScreen(
                 // Tarjeta visual que contiene la información de una actividad.
                 Card(
                     onClick = {
-                        // Abre la pantalla de edición de la actividad seleccionada.
-                        onEditarActividad(actividad.id)
+                        // Las actividades completadas no se pueden editar.
+                        if (actividad.completada) {
+                            mostrarAvisoActividadCompletada = true
+                        } else {
+                            // Las actividades pendientes sí pueden abrirse para editar.
+                            onEditarActividad(actividad.id)
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -530,6 +540,30 @@ fun DiaScreen(
                     }
                 }
             }
+        // Muestra un aviso cuando se intenta editar una actividad completada.
+        if (mostrarAvisoActividadCompletada) {
+            AlertDialog(
+                onDismissRequest = {
+                    mostrarAvisoActividadCompletada = false
+                },
+                title = {
+                    Text("Actividad completada")
+                },
+                text = {
+                    Text("Las actividades completadas no se pueden editar.")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            mostrarAvisoActividadCompletada = false
+                        }
+                    ) {
+                        Text("Aceptar")
+                    }
+                }
+            )
+        }
+
         // Espacio entre la lista de actividades y los botones de navegación.
         Spacer(modifier = Modifier.height(16.dp))
 
