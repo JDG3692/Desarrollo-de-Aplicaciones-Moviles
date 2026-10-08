@@ -310,10 +310,36 @@ fun DiaScreen(
                 val calendario = Calendar.getInstance()
 
                 TimePickerDialog(
-                    LocalContext.current, { _, hora, minuto ->
-                        horaTarea = String.format("%02d:%02d", hora, minuto)
+                    LocalContext.current,
+                    { _, hora, minuto ->
+
+                        // Obtiene la hora y minuto actuales del dispositivo.
+                        val ahora = Calendar.getInstance()
+
+                        // Convierte la hora seleccionada a minutos.
+                        val minutosSeleccionados =
+                            hora * 60 + minuto
+
+                        // Convierte la hora actual a minutos.
+                        val minutosActuales =
+                            ahora.get(Calendar.HOUR_OF_DAY) * 60 +
+                                    ahora.get(Calendar.MINUTE)
+
+                        // Solo permite seleccionar la hora actual o una hora futura.
+                        if (minutosSeleccionados >= minutosActuales) {
+                            horaTarea = String.format(
+                                "%02d:%02d",
+                                hora,
+                                minuto
+                            )
+                        }
+
+                        // Cierra el selector de hora.
                         mostrarSelectorHora = false
-                    }, calendario.get(Calendar.HOUR_OF_DAY), calendario.get(Calendar.MINUTE), true
+                    },
+                    calendario.get(Calendar.HOUR_OF_DAY),
+                    calendario.get(Calendar.MINUTE),
+                    true
                 ).show()
             }
 
@@ -374,14 +400,27 @@ fun DiaScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         // Obtiene las actividades correspondientes a la fecha consultada.
-        actividades
-        actividades.filter { actividad ->
+        val actividadesDelDia = actividades
+            .filter { actividad ->
                 actividad.fecha == fechaConsultada
             }
-            // Ordena las actividades de acuerdo con su hora.
             .sortedBy { it.hora }
-            // Recorre cada actividad para construir su tarjeta.
-            .forEach { actividad ->
+
+        // Muestra un mensaje cuando no existen actividades para el día consultado.
+        if (actividadesDelDia.isEmpty()) {
+            Text(
+                text = "No hay actividades programadas para este día",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 24.dp),
+                textAlign = TextAlign.Center,
+                fontSize = 15.sp,
+                color = Color.Gray
+            )
+        }
+
+        // Recorre las actividades del día para construir sus tarjetas.
+        actividadesDelDia.forEach { actividad ->
                 // Comprueba si la actividad ya fue completada.
                 val actividadCompletada = actividad.completada
 

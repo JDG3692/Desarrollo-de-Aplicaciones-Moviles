@@ -372,18 +372,70 @@ fun EditarActividadScreen(
         // Botón principal para guardar los cambios.
         Button(
             onClick = {
-                // Conserva el estado de completada y de alarma de la actividad.
-                val actividadActualizada = actividad.copy(
-                    titulo = titulo,
-                    fecha = fecha,
-                    hora = hora
-                )
+                // Convierte la fecha seleccionada a un objeto Calendar.
+                val fechaSeleccionada = try {
+                    SimpleDateFormat(
+                        "yyyy-MM-dd",
+                        Locale.getDefault()
+                    ).parse(fecha)
+                } catch (e: Exception) {
+                    null
+                }
 
-                // Guarda los cambios en Room.
-                agendaViewModel.actualizarActividad(actividadActualizada)
+                // Obtiene hoy sin considerar la hora.
+                val hoy = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
 
-                // Regresa a la pantalla anterior.
-                onVolver()
+                // Comprueba si la actividad está programada para hoy.
+                val fechaEsHoy =
+                    fechaSeleccionada != null &&
+                            fechaSeleccionada.time == hoy.time.time
+
+                // Comprueba si la hora seleccionada ya pasó.
+                val horaEsInvalida = if (fechaEsHoy) {
+                    try {
+                        val horaPartes = hora.split(":")
+                        val horaSeleccionada = horaPartes[0].toInt()
+                        val minutoSeleccionado = horaPartes[1].toInt()
+
+                        val ahora = Calendar.getInstance()
+
+                        val minutosSeleccionados =
+                            horaSeleccionada * 60 + minutoSeleccionado
+
+                        val minutosActuales =
+                            ahora.get(Calendar.HOUR_OF_DAY) * 60 +
+                                    ahora.get(Calendar.MINUTE)
+
+                        minutosSeleccionados < minutosActuales
+                    } catch (e: Exception) {
+                        false
+                    }
+                } else {
+                    false
+                }
+
+                // Si la hora ya pasó, no permite guardar la actividad.
+                if (horaEsInvalida) {
+                    // No permite guardar una actividad de hoy con una hora que ya pasó.
+                } else {
+                    // Conserva el estado de completada y de alarma de la actividad.
+                    val actividadActualizada = actividad.copy(
+                        titulo = titulo,
+                        fecha = fecha,
+                        hora = hora
+                    )
+
+                    // Guarda los cambios en Room.
+                    agendaViewModel.actualizarActividad(actividadActualizada)
+
+                    // Regresa a la pantalla anterior.
+                    onVolver()
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -460,4 +512,5 @@ fun EditarActividadScreen(
             }
         )
     }
+
 }
