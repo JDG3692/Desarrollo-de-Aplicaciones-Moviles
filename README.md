@@ -2,154 +2,135 @@
 
 ## 1. Descripción del proyecto
 
-**Agenda Personal** será una aplicación móvil para Android orientada principalmente a la **organización de actividades y compromisos laborales**, aunque también podrá utilizarse para actividades personales y académicas. La **pantalla principal** estará centrada en el día actual y mostrará las actividades pendientes correspondientes a esa fecha, permitiendo consultar rápidamente lo que está pendiente y agregar nuevas actividades.
+**Agenda Personal** es una aplicación móvil para Android orientada principalmente a la organización de actividades y compromisos laborales, aunque también puede utilizarse para actividades personales y académicas.
 
-La pantalla principal incluirá un encabezado de bienvenida, la fecha que se está consultando, navegación al día anterior o siguiente, un espacio para registrar rápidamente una actividad y su hora, y una sección de actividades organizadas cronológicamente. Las actividades completadas se ocultarán de esta vista para mantenerla limpia y enfocada en los pendientes.
+La aplicación permite consultar actividades por fecha, registrar actividades para el día consultado, programar actividades para fechas futuras y revisar las actividades desde un calendario mensual. Los datos se almacenan localmente mediante **Room**, por lo que las actividades permanecen guardadas en la base de datos del dispositivo.
 
-Desde la pantalla principal habrá opciones para acceder a una **vista de calendario mensual** y a una sección para **programar actividades para fechas futuras**. El calendario permitirá reconocer mediante un punto los días que tienen actividades y seleccionar una fecha para consultar sus actividades.
-
-La aplicación generará un recordatorio visual y sonoro cuando llegue la hora programada. Cada actividad contará con controles independientes para activar o silenciar el **sonido 🔊** y la **notificación 🔔** directamente desde su tarjeta. Al aceptar la actividad, esta se marcará como completada y dejará de aparecer entre los pendientes del día, pero permanecerá almacenada para permitir implementar posteriormente un historial de actividades completadas.
-
-La propuesta inicial busca mantener una aplicación sencilla, práctica y fácil de utilizar, pero con una estructura que permita ampliar sus funciones después de finalizar el proyecto académico.
+El proyecto se desarrolla de forma incremental. Este README distingue entre las funciones que ya están implementadas y las que todavía están pendientes.
 
 ## 2. Exposición del problema
 
-En mi experiencia laboral, tengo diariamente diferentes **tareas, actividades y compromisos** que debo recordar y atender durante la jornada, la semana y el mes. Cuando se acumulan varios pendientes, puede resultar difícil mantenerlos todos presentes, especialmente cuando se utiliza la memoria o diferentes medios para registrar lo que se necesita realizar.
+En la jornada laboral pueden acumularse tareas, actividades y compromisos que deben atenderse durante el día, la semana o el mes. Cuando se depende de la memoria o de diferentes medios para registrarlos, puede resultar difícil mantenerlos organizados y recordar cuándo deben realizarse.
 
-Aunque existen herramientas como Google Calendar y otras aplicaciones de organización, en algunas ocasiones considero que registrar una actividad puede resultar más elaborado de lo necesario cuando solamente se desea anotar rápidamente algo que se debe hacer. Esto puede llevar a que algunos pendientes terminen registrados en diferentes lugares o a que se dependa de la memoria para recordarlos.
+Aunque existen herramientas de calendario y organización, registrar una actividad sencilla puede sentirse más elaborado de lo necesario. De esta necesidad surge la propuesta de desarrollar una agenda móvil que facilite el registro rápido de actividades, la consulta por fecha y la organización de compromisos futuros desde una interfaz sencilla.
 
-A partir de esta necesidad surge la idea de desarrollar una agenda móvil sencilla, con un enfoque inicial en la **organización de actividades laborales**, que muestre en primer lugar los pendientes del día actual, facilite el registro rápido de nuevas actividades, permita programar compromisos futuros y ofrezca una visión mensual de las actividades. También se busca evitar que las actividades ya realizadas permanezcan acumuladas en la pantalla principal.
-
-## 3. Objetivo del proyecto
+## 3. Objetivos del proyecto
 
 ### Objetivo general
 
-Desarrollar una aplicación móvil para Android que facilite la **organización y seguimiento de actividades laborales**, mediante una pantalla principal centrada en el día actual, una vista de calendario mensual y un sistema de recordatorios.
+Desarrollar una aplicación móvil para Android que facilite la organización y el seguimiento de actividades, mediante una vista diaria, un calendario mensual y almacenamiento local.
 
 ### Objetivos específicos
 
-- Mostrar inicialmente las actividades pendientes correspondientes al día actual.
-- Permitir registrar rápidamente una actividad para el día actual indicando su descripción y hora.
-- Permitir navegar entre días desde la pantalla principal para consultar otras fechas.
-- Permitir consultar las actividades de diferentes fechas mediante un calendario mensual.
-- Permitir programar actividades para fechas diferentes a la fecha actual.
-- Permitir editar una actividad existente, incluyendo su descripción, fecha y hora.
-- Permitir eliminar actividades.
-- Permitir marcar una actividad como completada y ocultarla de las actividades pendientes.
-- Mantener almacenadas las actividades completadas para posibilitar un historial futuro.
-- Organizar automáticamente las actividades pendientes por hora.
-- Incorporar recordatorios visuales y sonoros asociados a las actividades.
-- Permitir activar o silenciar de forma independiente el sonido y la notificación de cada actividad.
-- Permitir aceptar o posponer un recordatorio cuando llegue la hora programada.
-- Mantener una primera versión sencilla y funcional que pueda ampliarse posteriormente.
+- Consultar las actividades correspondientes a una fecha.
+- Registrar rápidamente una actividad para el día consultado.
+- Navegar entre días desde la pantalla principal.
+- Consultar actividades mediante un calendario mensual.
+- Programar actividades para fechas futuras.
+- Editar la descripción, fecha y hora de una actividad que no esté completada.
+- Eliminar actividades.
+- Marcar actividades como completadas y conservar su información.
+- Mostrar las actividades en orden cronológico.
+- Guardar las actividades localmente para conservarlas entre ejecuciones de la aplicación.
+- Preparar la estructura para implementar recordatorios y notificaciones en una etapa posterior.
 
-## 4. Plataforma
+## 4. Plataforma y tecnologías
 
-El proyecto será desarrollado inicialmente para dispositivos **Android**, utilizando **Android Studio** como entorno de desarrollo.
+- **Plataforma:** Android.
+- **Entorno de desarrollo:** Android Studio.
+- **Lenguaje:** Kotlin.
+- **Interfaz:** Jetpack Compose y Material 3.
+- **Persistencia local:** Room.
+- **Arquitectura de estado:** ViewModel, StateFlow y corrutinas.
+- **Navegación:** Navigation Compose.
 
-Durante el desarrollo se estudiarán las herramientas y componentes necesarios para implementar la interfaz, el almacenamiento de la información, la gestión de fechas y horas y el sistema de notificaciones. La primera versión estará orientada principalmente al funcionamiento local en el dispositivo, dejando abierta la posibilidad de incorporar servicios adicionales en futuras versiones.
+La aplicación está orientada inicialmente al funcionamiento local en el dispositivo. La sincronización entre dispositivos y otros servicios externos no forman parte del alcance actual.
 
-## 5. Interfaz de usuario e interfaz de administración
+## 5. Pantallas y navegación
 
-### Interfaz de usuario
+### Día
 
-La aplicación estará diseñada principalmente para un usuario que necesita organizar sus actividades laborales. Las principales vistas y funciones consideradas inicialmente son:
+La pantalla diaria permite consultar las actividades de la fecha seleccionada, navegar al día anterior o siguiente y registrar rápidamente una actividad indicando su título y hora. Si la fecha no tiene actividades, se muestra un mensaje informativo.
 
-- **Pantalla principal / vista diaria:** mostrará un mensaje de bienvenida, la fecha consultada con navegación entre días, un formulario de registro rápido de actividades y las actividades pendientes del día ordenadas por hora.
-- **Nueva actividad rápida:** permitirá escribir qué se necesita realizar y seleccionar una hora. Al registrarla desde la pantalla principal, quedará asociada automáticamente al día que se esté consultando.
-- **Programar actividad:** permitirá crear una actividad para una fecha específica, indicando descripción, fecha y hora.
-- **Vista mensual:** mostrará un calendario del mes con un punto en los días que tengan actividades y permitirá seleccionar una fecha para consultar sus actividades.
-- **Edición de actividad:** al seleccionar una actividad se podrá modificar su descripción, fecha u hora, o eliminarla.
-- **Controles de recordatorio:** cada tarjeta de actividad tendrá un botón de sonido y un botón de notificación que podrán activarse o silenciarse de forma independiente.
-- **Recordatorio:** cuando llegue la fecha y hora programadas se mostrará una alerta visual y sonora según la configuración de la actividad, con opciones para aceptar o posponer.
+Las actividades se presentan por fecha y hora. Las actividades completadas conservan su registro y muestran su estado; no se permite abrirlas para editarlas o reprogramarlas. La interfaz informa: **«Las actividades completadas no se pueden editar.»**
 
-La pantalla diaria se mantendrá enfocada en las actividades pendientes. Las actividades completadas se ocultarán de esta vista, mientras que sus datos se conservarán para una posible función de historial posterior.
+La creación rápida está destinada al día consultado. Para crear nuevas actividades mediante la pantalla de programación, se selecciona una fecha futura.
 
-### Interfaz de administración
+### Programar actividad
 
-La primera versión del proyecto no contempla diferentes tipos de usuarios ni un perfil administrativo independiente, debido a que la aplicación está planteada como una herramienta de uso personal para la **organización de actividades, principalmente laborales**. Las opciones de gestión necesarias estarán disponibles directamente para el usuario.
+Permite registrar una actividad indicando título, fecha y hora. Para las nuevas actividades, la fecha seleccionable comienza en el día siguiente; no se permite programarlas para hoy ni para una fecha pasada.
 
-## 6. Funcionalidad
+### Calendario
 
-| Funcionalidad | Descripción |
+Muestra un calendario mensual con indicadores en los días que contienen actividades. Al seleccionar un día, se presenta la lista de actividades correspondientes a esa fecha, ordenadas por hora.
+
+### Editar actividad
+
+Permite modificar el título, la fecha y la hora de una actividad que no esté completada. La fecha no puede establecerse en el pasado. Si se selecciona el día actual, la hora debe ser la actual o una posterior. Las actividades completadas no se pueden editar ni reprogramar.
+
+La eliminación de actividades está disponible como una operación independiente dentro del flujo de edición.
+
+## 6. Funcionalidades implementadas
+
+| Funcionalidad | Estado y comportamiento |
 |---|---|
-| Pantalla diaria | Mostrar las actividades pendientes del día consultado. |
-| Bienvenida y fecha | Mostrar un mensaje de bienvenida y la fecha consultada. |
-| Navegación entre días | Permitir ir al día anterior o siguiente sin eliminar actividades. |
-| Agregar actividad | Registrar rápidamente una actividad para el día consultado. |
-| Selector de hora | Seleccionar hora mediante una interfaz sencilla con horas, minutos y AM/PM. |
-| Orden cronológico | Mostrar automáticamente las actividades pendientes ordenadas por hora. |
-| Programar actividad | Registrar una actividad para una fecha específica, incluyendo fechas futuras. |
-| Vista mensual | Mostrar un calendario con puntos en los días que tengan actividades. |
-| Consulta por fecha | Mostrar las actividades correspondientes a una fecha seleccionada. |
-| Editar actividad | Modificar la descripción, fecha u hora de una actividad existente. |
-| Eliminar actividad | Eliminar una actividad que ya no sea necesaria. |
-| Completar actividad | Marcar una actividad como realizada y ocultarla de las actividades pendientes. |
-| Conservación de completadas | Mantener almacenadas las actividades completadas para un historial futuro. |
-| Sonido | Activar o silenciar de forma independiente el aviso sonoro de una actividad. |
-| Notificación | Activar o silenciar de forma independiente la notificación de una actividad. |
-| Recordatorio | Programar una alerta asociada a la fecha y hora de una actividad. |
-| Posponer | Permitir posponer un recordatorio para volver a notificar posteriormente. |
+| Consulta diaria | Implementada; permite consultar las actividades de la fecha seleccionada. |
+| Navegación entre días | Implementada. |
+| Registro rápido | Implementado para el día consultado, con validación de la hora cuando corresponde. |
+| Programación de actividades | Implementada para fechas futuras; la primera fecha permitida es mañana. |
+| Calendario mensual | Implementado, con indicadores de días que tienen actividades. |
+| Consulta por fecha | Implementada desde el calendario. |
+| Edición de actividades | Implementada para actividades no completadas. |
+| Validación de fecha y hora | Implementada para impedir fechas pasadas y horas pasadas cuando la actividad se programa para hoy. |
+| Eliminación de actividades | Disponible desde el flujo de edición. |
+| Estado de completada | Implementado y conservado en la base de datos. |
+| Protección de actividades completadas | Implementada; no permite editarlas ni reprogramarlas. |
+| Almacenamiento local | Implementado mediante Room. |
+| Estado de alarma por actividad | Implementado como dato persistente; permite activar o silenciar la configuración de alarma de cada actividad. |
+| Programación real de alarmas | Pendiente. |
+| Notificaciones del sistema | Pendientes. |
+| Acciones desde una notificación | Pendientes. |
 
-## 7. Diseño y wireframes
+**Importante:** que una actividad tenga guardado el estado de su alarma no significa que el sistema ya programe o dispare una alarma real. La integración con alarmas y notificaciones se desarrollará posteriormente.
 
-Los wireframes se utilizan para definir la estructura visual, la distribución de los elementos y el flujo de navegación de las principales pantallas antes de completar la implementación. El diseño mantiene una línea visual sencilla, consistente y centrada en la gestión rápida de actividades.
+## 7. Persistencia de datos
+
+Room administra el almacenamiento local de las actividades. La estructura principal está compuesta por:
+
+- **Actividad.kt:** define la entidad y los datos de cada actividad, incluidos su identificador, título, fecha, hora, estado de completada y estado de alarma.
+- **ActividadDao.kt:** define las operaciones para consultar, insertar, actualizar y eliminar actividades.
+- **AgendaDatabase.kt:** configura la base de datos local y la migración que incorpora el campo `alarmaActiva`.
+- **AgendaViewModel.kt:** expone las actividades a la interfaz y ejecuta las operaciones sobre la base de datos mediante corrutinas.
+
+La lista de actividades se consulta de forma reactiva. Cuando Room registra cambios, el estado observado por la interfaz puede actualizarse automáticamente.
+
+## 8. Diseño y wireframes
+
+Los siguientes wireframes documentan la propuesta visual inicial. Se conservan como referencia del diseño; algunos controles representados, especialmente los de sonido y notificación separados, no corresponden a la interfaz implementada actualmente.
 
 ### Wireframe 01 — Día / Hoy
 
 ![Wireframe 01 — Día / Hoy](docs/wireframes/Wireframe%201.png)
 
-Pantalla principal de la aplicación. Incluye el encabezado de bienvenida, la fecha consultada con navegación entre días, creación rápida de actividades, lista cronológica de actividades y acceso a las funciones principales.
-
-- Navegación al día anterior y siguiente.
-- Registro rápido con descripción y hora.
-- Actividades pendientes ordenadas por hora.
-- Cada actividad puede abrirse para edición al tocarla.
-- Cada actividad dispone de controles independientes de **sonido 🔊** y **notificación 🔔**.
-- Botón **Programar actividad** en la parte inferior.
-- Botón **Calendario** en la parte inferior.
-- No se incorpora un contador de actividades ni un bloque especial para la próxima actividad.
+Representa la pantalla principal, la navegación entre días, el registro rápido, la lista de actividades y los accesos a las demás pantallas.
 
 ### Wireframe 02 — Programar actividad
 
 ![Wireframe 02 — Programar actividad](docs/wireframes/Wireframe%202.png)
 
-Pantalla destinada a crear una actividad para una fecha y hora específicas, especialmente para actividades futuras.
-
-- Regreso a la pantalla anterior.
-- Campo para la descripción de la actividad.
-- Selector de fecha.
-- Selector de hora.
-- Botón **Programar actividad**.
-- Los controles de sonido y notificación se gestionan posteriormente desde la tarjeta de la actividad.
+Representa el formulario para definir el título, la fecha y la hora de una actividad.
 
 ### Wireframe 03 — Calendario
 
 ![Wireframe 03 — Calendario](docs/wireframes/Wireframe%203.png)
 
-Pantalla de consulta mensual y navegación entre fechas.
-
-- Navegación entre meses.
-- Punto debajo del número en los días que tienen actividades.
-- Resaltado visual del día seleccionado.
-- Selección de un día para consultar sus actividades.
-- Lista de actividades correspondientes a la fecha seleccionada.
-- Las actividades conservan sus controles independientes de sonido y notificación.
-- No incluye un botón adicional de **Programar actividad** para evitar duplicar la acción principal.
+Representa la consulta mensual, los indicadores de días con actividades y la selección de una fecha.
 
 ### Wireframe 04 — Editar actividad
 
 ![Wireframe 04 — Editar actividad](docs/wireframes/Wireframe%204.png)
 
-Pantalla utilizada al tocar una actividad desde Día/Hoy o Calendario.
-
-- Regreso sin guardar cambios.
-- Edición de descripción.
-- Cambio de fecha.
-- Cambio de hora.
-- Botón **Guardar cambios**.
-- Botón **Eliminar actividad**.
-- Los controles de sonido y notificación continúan gestionándose desde la tarjeta de la actividad.
+Representa la edición de una actividad existente y las acciones relacionadas.
 
 ### Wireframes completos
 
@@ -158,68 +139,58 @@ Pantalla utilizada al tocar una actividad desde Día/Hoy o Calendario.
 ### Flujo principal
 
 ```text
-Día / Hoy
-   ├── Agregar actividad
-   ├── Programar actividad
-   ├── Calendario
-   │      └── Seleccionar día → consultar actividades
-   └── Tocar actividad → Editar actividad
+Día
+ ├── Registrar actividad para el día consultado
+ ├── Programar actividad para una fecha futura
+ ├── Calendario
+ │    └── Seleccionar fecha y consultar actividades
+ └── Seleccionar actividad no completada
+      └── Editar o eliminar
 ```
 
-El conjunto actual de wireframes cubre el flujo principal de **consultar, crear, programar, navegar por fechas, editar y gestionar actividades**. Funciones adicionales se podrán documentar posteriormente si se incorporan al alcance.
+## 9. Alcance actual y trabajo pendiente
 
-## 8. Alcance inicial
+La versión actual prioriza la consulta, creación, edición, eliminación y conservación local de actividades. También incluye la consulta por calendario, las validaciones de fecha y hora y la protección de actividades completadas.
 
-La primera versión del proyecto se enfocará en las funciones básicas de una agenda personal, con **prioridad en la organización de actividades laborales**, dando especial importancia a la pantalla del día actual, la consulta mediante calendario mensual, la programación de actividades y el funcionamiento de los recordatorios.
+Las siguientes tareas quedan pendientes:
 
-La pantalla principal deberá permitir registrar rápidamente actividades del día, seleccionar su hora, visualizarlas ordenadas cronológicamente, completarlas y editarlas. Las actividades completadas se ocultarán de la vista diaria, pero permanecerán almacenadas.
+- Implementar la programación de alarmas reales para cada actividad.
+- Implementar las notificaciones del sistema.
+- Definir y desarrollar las acciones de la notificación: completar, reprogramar y no completar.
+- Determinar el comportamiento del sonido y la persistencia de los recordatorios.
+- Revisar visualmente las tarjetas de Día y Calendario al integrar las notificaciones.
+- Probar el flujo completo de creación, edición, eliminación y conservación de actividades.
+- Completar la revisión y documentación de los archivos del proyecto.
+- Realizar las pruebas finales y preparar la entrega académica.
 
-Las actividades programadas para fechas futuras se conservarán hasta llegar a su fecha correspondiente. Al cambiar el día, la vista diaria mostrará únicamente las actividades de la nueva fecha; no se propone borrar físicamente las actividades anteriores.
+Como posibles mejoras posteriores se consideran un historial específico de actividades completadas, actividades recurrentes, estadísticas, copias de seguridad, sincronización y personalización adicional. Estas mejoras no forman parte del alcance implementado actualmente.
 
-Se priorizará que registrar, consultar, editar y completar una actividad sea rápido y sencillo.
-
-## 9. Posibles mejoras futuras
-
-Una vez finalizado el proyecto académico, se contempla la posibilidad de continuar su desarrollo incorporando nuevas funciones según las necesidades identificadas durante su utilización. Algunas posibilidades podrían ser:
-
-- Historial de actividades completadas.
-- Actividades recurrentes.
-- Estadísticas de actividades completadas.
-- Mayor personalización de los recordatorios.
-- Copias de seguridad de la información.
-- Sincronización entre dispositivos.
-- Integración con otros servicios de calendario.
-- Mejoras de diseño y accesibilidad.
-
-Estas funciones no forman parte del alcance inicial y se considerarían posteriormente de acuerdo con la evolución del proyecto.
 ## 10. Registro de cambios (Changelog)
 
-### Cambios anteriores
+### Avances anteriores
 
-- Se definió la propuesta inicial de Agenda Personal y su objetivo principal.
-- Se diseñaron los wireframes de las principales pantallas y se estableció el flujo de navegación.
-- Se implementó la pantalla principal para consultar las actividades del día y registrar nuevas actividades.
-- Se agregó la navegación entre días.
-- Se incorporó la pantalla para programar actividades en fechas futuras.
-- Se implementó la persistencia de datos utilizando Room, incluyendo la entidad de actividades, el DAO y la base de datos.
-- Se incorporó un ViewModel para administrar el estado de las actividades y conectar la interfaz con la base de datos.
-- Se desarrolló la vista de calendario mensual para consultar las actividades organizadas por fecha.
-- Se realizaron ajustes visuales y funcionales en las pantallas para acercarlas a los wireframes definidos.
+- Se definió el propósito de Agenda Personal y se diseñaron los wireframes iniciales.
+- Se implementó la pantalla diaria y la navegación entre fechas.
+- Se incorporó la pantalla para programar actividades futuras.
+- Se implementó el almacenamiento local mediante Room.
+- Se incorporó AgendaViewModel para conectar la interfaz con la base de datos.
+- Se desarrolló el calendario mensual y la consulta de actividades por fecha.
 
-### Cambios actuales — Módulo 5
+### Avances recientes
 
-- Se consolidó la integración entre la interfaz y la base de datos local mediante Room.
-- Se mejoró la navegación entre días y meses para facilitar la consulta de actividades.
-- Se ajustó la presentación del calendario para identificar visualmente los días que contienen actividades.
-- Se actualizó la documentación del proyecto y los wireframes en el README.
-- Se mantiene como prioridad que la aplicación permita registrar y consultar actividades de manera sencilla.
+- Se ajustaron las pantallas de Día, Calendario, Programar actividad y Editar actividad.
+- Se incorporó la edición y eliminación de actividades.
+- Se agregaron validaciones para impedir programar actividades nuevas en fechas pasadas o en el día actual desde la pantalla de programación.
+- Se agregó validación de fecha y hora al editar actividades.
+- Se impide editar o reprogramar actividades completadas y se informa al usuario del motivo.
+- Se añadió un mensaje para los días sin actividades.
+- Se incorporó el estado persistente de alarma por actividad.
+- Se está documentando el código para facilitar su comprensión y mantenimiento.
 
-### Cambios futuros
+### Próximos avances
 
-- Completar la edición y eliminación de actividades desde la interfaz.
-- Implementar completamente los recordatorios y las notificaciones.
-- Incorporar el comportamiento de sonido y notificación asociado a cada actividad.
-- Mejorar el manejo de actividades completadas y preparar su posible historial.
-- Realizar pruebas y correcciones antes de la entrega final.
-- Revisar la interfaz y realizar los ajustes finales de usabilidad.
-- Preparar la versión final del proyecto para el módulo 8.
+- Finalizar la revisión de la documentación de los archivos.
+- Revisar la interfaz y comprobar los flujos de uso.
+- Implementar las alarmas y notificaciones reales.
+- Probar el comportamiento de las notificaciones y sus acciones.
+- Preparar y verificar la versión final del proyecto.
