@@ -971,8 +971,11 @@ fun DiaScreen(
                 }
             )
         }
-        // Abre el selector nativo para elegir el día que se desea eliminar.
-        if (mostrarSelectorFechaEliminacion && tipoEliminacion == "dia") {
+        // Abre el selector nativo para elegir el día, mes o año.
+        if (
+            mostrarSelectorFechaEliminacion &&
+            tipoEliminacion in listOf("dia", "mes", "anio")
+        ) {
             val calendarioSelector = Calendar.getInstance()
 
             DatePickerDialog(
@@ -984,10 +987,75 @@ fun DiaScreen(
                         set(Calendar.DAY_OF_MONTH, dia)
                     }
 
-                    fechaEliminacion = SimpleDateFormat(
-                        "yyyy-MM-dd",
-                        Locale.getDefault()
-                    ).format(calendarioSeleccionado.time)
+                    // Define el inicio y el final exclusivo del periodo elegido.
+                    when (tipoEliminacion) {
+                        "dia" -> {
+                            fechaEliminacion = SimpleDateFormat(
+                                "yyyy-MM-dd",
+                                Locale.getDefault()
+                            ).format(calendarioSeleccionado.time)
+
+                            fechaInicioEliminacion = fechaEliminacion
+
+                            calendarioSeleccionado.add(
+                                Calendar.DAY_OF_MONTH,
+                                1
+                            )
+
+                            fechaFinEliminacion = SimpleDateFormat(
+                                "yyyy-MM-dd",
+                                Locale.getDefault()
+                            ).format(calendarioSeleccionado.time)
+                        }
+
+                        "mes" -> {
+                            calendarioSeleccionado.set(
+                                Calendar.DAY_OF_MONTH,
+                                1
+                            )
+
+                            fechaInicioEliminacion = SimpleDateFormat(
+                                "yyyy-MM-dd",
+                                Locale.getDefault()
+                            ).format(calendarioSeleccionado.time)
+
+                            calendarioSeleccionado.add(
+                                Calendar.MONTH,
+                                1
+                            )
+
+                            fechaFinEliminacion = SimpleDateFormat(
+                                "yyyy-MM-dd",
+                                Locale.getDefault()
+                            ).format(calendarioSeleccionado.time)
+                        }
+
+                        "anio" -> {
+                            calendarioSeleccionado.set(
+                                Calendar.MONTH,
+                                Calendar.JANUARY
+                            )
+                            calendarioSeleccionado.set(
+                                Calendar.DAY_OF_MONTH,
+                                1
+                            )
+
+                            fechaInicioEliminacion = SimpleDateFormat(
+                                "yyyy-MM-dd",
+                                Locale.getDefault()
+                            ).format(calendarioSeleccionado.time)
+
+                            calendarioSeleccionado.add(
+                                Calendar.YEAR,
+                                1
+                            )
+
+                            fechaFinEliminacion = SimpleDateFormat(
+                                "yyyy-MM-dd",
+                                Locale.getDefault()
+                            ).format(calendarioSeleccionado.time)
+                        }
+                    }
 
                     mostrarSelectorFechaEliminacion = false
                     mostrarConfirmacionPeriodo = true
@@ -995,7 +1063,16 @@ fun DiaScreen(
                 calendarioSelector.get(Calendar.YEAR),
                 calendarioSelector.get(Calendar.MONTH),
                 calendarioSelector.get(Calendar.DAY_OF_MONTH)
-            ).show()
+            ).apply {
+                setTitle(
+                    when (tipoEliminacion) {
+                        "dia" -> "Selecciona el día"
+                        "mes" -> "Selecciona una fecha del mes"
+                        "anio" -> "Selecciona una fecha del año"
+                        else -> "Selecciona una fecha"
+                    }
+                )
+            }.show()
         }
 
         // Solicita confirmación antes de eliminar las actividades de un día.
@@ -1046,6 +1123,96 @@ fun DiaScreen(
                         onClick = {
                             mostrarConfirmacionPeriodo = false
                             fechaEliminacion = ""
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                            contentColor = azulPrincipal
+                        )
+                    ) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
+        // Solicita confirmación para eliminar todas las actividades de un mes o año.
+        if (
+            mostrarConfirmacionPeriodo &&
+            tipoEliminacion in listOf("mes", "anio")
+        ) {
+            val actividadesDelPeriodo = actividades.filter {
+                it.fecha >= fechaInicioEliminacion &&
+                        it.fecha < fechaFinEliminacion
+            }
+
+            val cantidadActividades = actividadesDelPeriodo.size
+
+            val inicioPeriodo = SimpleDateFormat(
+                "yyyy-MM-dd",
+                Locale.getDefault()
+            ).parse(fechaInicioEliminacion)!!
+
+            val descripcionPeriodo = when (tipoEliminacion) {
+                "mes" -> SimpleDateFormat(
+                    "MMMM 'de' yyyy",
+                    Locale("es", "CO")
+                ).format(inicioPeriodo)
+
+                else -> fechaInicioEliminacion.substring(0, 4)
+            }
+
+            AlertDialog(
+                onDismissRequest = {
+                    mostrarConfirmacionPeriodo = false
+                },
+                containerColor = Color.White,
+                titleContentColor = Color(0xFF303030),
+                title = {
+                    Text(
+                        if (tipoEliminacion == "mes") {
+                            "Eliminar actividades del mes"
+                        } else {
+                            "Eliminar actividades del año"
+                        }
+                    )
+                },
+                text = {
+                    Text(
+                        if (cantidadActividades == 0) {
+                            "No hay actividades para $descripcionPeriodo."
+                        } else {
+                            "Se eliminarán $cantidadActividades actividades de " +
+                                    "$descripcionPeriodo. Se incluyen actividades " +
+                                    "pendientes, completadas y vencidas. " +
+                                    "Esta acción no se puede deshacer."
+                        }
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        enabled = cantidadActividades > 0,
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                            containerColor = azulPrincipal,
+                            contentColor = Color.White
+                        ),
+                        onClick = {
+                            agendaViewModel.eliminarActividadesPorRango(
+                                fechaInicioEliminacion,
+                                fechaFinEliminacion
+                            )
+
+                            mostrarConfirmacionPeriodo = false
+                            fechaInicioEliminacion = ""
+                            fechaFinEliminacion = ""
+                        }
+                    ) {
+                        Text("Eliminar")
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(
+                        onClick = {
+                            mostrarConfirmacionPeriodo = false
+                            fechaInicioEliminacion = ""
+                            fechaFinEliminacion = ""
                         },
                         colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
                             contentColor = azulPrincipal
