@@ -55,6 +55,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material.icons.filled.Delete
+import android.app.DatePickerDialog
 
 
 
@@ -898,6 +899,157 @@ fun DiaScreen(
                             mostrarSeleccionActividad = false
                             actividadSeleccionadaId = null
                         }
+                    ) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
+
+        // Solicita confirmación antes de eliminar una actividad individual.
+        if (mostrarConfirmacionPeriodo && tipoEliminacion == "actividad") {
+
+            // Busca la actividad seleccionada en la agenda.
+            val actividadSeleccionada = actividades.find {
+                it.id == actividadSeleccionadaId
+            }
+
+            AlertDialog(
+                onDismissRequest = {
+                    mostrarConfirmacionPeriodo = false
+                    actividadSeleccionadaId = null
+                },
+                containerColor = Color.White,
+                titleContentColor = Color(0xFF303030),
+                title = {
+                    Text("Eliminar actividad")
+                },
+                text = {
+                    if (actividadSeleccionada != null) {
+                        Text(
+                            "¿Deseas eliminar esta actividad?\n\n" +
+                                    "${actividadSeleccionada.titulo}\n" +
+                                    "Fecha: ${actividadSeleccionada.fecha}\n" +
+                                    "Hora: ${actividadSeleccionada.hora}\n\n" +
+                                    "Esta acción no se puede deshacer."
+                        )
+                    } else {
+                        Text("La actividad seleccionada ya no está disponible.")
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        enabled = actividadSeleccionada != null,
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                            containerColor = azulPrincipal,
+                            contentColor = Color.White
+                        ),
+                        onClick = {
+                            actividadSeleccionada?.let {
+                                agendaViewModel.eliminarActividad(it)
+                            }
+
+                            mostrarConfirmacionPeriodo = false
+                            actividadSeleccionadaId = null
+                        }
+                    ) {
+                        Text("Eliminar")
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(
+                        onClick = {
+                            mostrarConfirmacionPeriodo = false
+                            actividadSeleccionadaId = null
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                            contentColor = azulPrincipal
+                        )
+                    ) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
+        // Abre el selector nativo para elegir el día que se desea eliminar.
+        if (mostrarSelectorFechaEliminacion && tipoEliminacion == "dia") {
+            val calendarioSelector = Calendar.getInstance()
+
+            DatePickerDialog(
+                LocalContext.current,
+                { _, anio, mes, dia ->
+                    val calendarioSeleccionado = Calendar.getInstance().apply {
+                        set(Calendar.YEAR, anio)
+                        set(Calendar.MONTH, mes)
+                        set(Calendar.DAY_OF_MONTH, dia)
+                    }
+
+                    fechaEliminacion = SimpleDateFormat(
+                        "yyyy-MM-dd",
+                        Locale.getDefault()
+                    ).format(calendarioSeleccionado.time)
+
+                    mostrarSelectorFechaEliminacion = false
+                    mostrarConfirmacionPeriodo = true
+                },
+                calendarioSelector.get(Calendar.YEAR),
+                calendarioSelector.get(Calendar.MONTH),
+                calendarioSelector.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        // Solicita confirmación antes de eliminar las actividades de un día.
+        if (mostrarConfirmacionPeriodo && tipoEliminacion == "dia") {
+            val actividadesDelPeriodo = actividades.filter {
+                it.fecha == fechaEliminacion
+            }
+            val cantidadActividades = actividadesDelPeriodo.size
+
+            AlertDialog(
+                onDismissRequest = {
+                    mostrarConfirmacionPeriodo = false
+                },
+                containerColor = Color.White,
+                titleContentColor = Color(0xFF303030),
+                title = {
+                    Text("Eliminar actividades del día")
+                },
+                text = {
+                    Text(
+                        if (cantidadActividades == 0) {
+                            "No hay actividades para el día $fechaEliminacion."
+                        } else {
+                            "Se eliminarán $cantidadActividades actividades del día " +
+                                    "$fechaEliminacion. Se incluyen actividades pendientes, " +
+                                    "completadas y vencidas. Esta acción no se puede deshacer."
+                        }
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        enabled = cantidadActividades > 0,
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                            containerColor = azulPrincipal,
+                            contentColor = Color.White
+                        ),
+                        onClick = {
+                            agendaViewModel.eliminarActividadesDelDia(fechaEliminacion)
+                            mostrarConfirmacionPeriodo = false
+                            fechaEliminacion = ""
+                        }
+                    ) {
+                        Text("Eliminar")
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(
+                        onClick = {
+                            mostrarConfirmacionPeriodo = false
+                            fechaEliminacion = ""
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                            contentColor = azulPrincipal
+                        )
                     ) {
                         Text("Cancelar")
                     }
