@@ -62,6 +62,8 @@ fun ProgramarActividadScreen(
     // Obtiene el contexto actual necesario para mostrar los diálogos de Android.
     val contexto = LocalContext.current
 
+    val azulPrincipal = Color(0xFF4B5F91)
+
     // Obtiene la fecha y hora actuales como valores iniciales para los selectores.
     val calendario = Calendar.getInstance()
 
@@ -89,7 +91,7 @@ fun ProgramarActividadScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Regresar"
+                    contentDescription = "Regresar",
                 )
             }
             // Título de la pantalla.
@@ -188,8 +190,11 @@ fun ProgramarActividadScreen(
 
                 }.show()
             },
-            modifier = Modifier.fillMaxWidth()
-        ) {
+            modifier = Modifier.fillMaxWidth(),
+            colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                contentColor = azulPrincipal
+            )
+        )  {
             // Organiza horizontalmente el icono, la fecha y la flecha.
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -199,7 +204,7 @@ fun ProgramarActividadScreen(
                 Icon(
                     imageVector = Icons.Default.CalendarMonth,
                     contentDescription = "Seleccionar fecha",
-                    tint = androidx.compose.ui.graphics.Color(0xFF3F6FC4)
+                    tint = azulPrincipal
                 )
                 // Espacio entre el icono y el texto.
                 Spacer(modifier = Modifier.width(8.dp))
@@ -264,7 +269,10 @@ fun ProgramarActividadScreen(
                     true
                 ).show()
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                contentColor = azulPrincipal
+            )
         ) {
             // Organiza horizontalmente el icono, la hora y la flecha.
             Row(
@@ -275,7 +283,7 @@ fun ProgramarActividadScreen(
                 Icon(
                     imageVector = Icons.Default.AccessTime,
                     contentDescription = "Seleccionar hora",
-                    tint = androidx.compose.ui.graphics.Color(0xFF3F6FC4)
+                    tint = azulPrincipal
                 )
                 // Espacio entre el icono y el texto.
                 Spacer(modifier = Modifier.width(8.dp))
@@ -340,7 +348,11 @@ fun ProgramarActividadScreen(
             // Define el ancho y la altura del botón.
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
+                .height(48.dp),
+            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                containerColor = azulPrincipal,
+                contentColor = Color.White
+            )
         ) {
             // Texto mostrado dentro del botón.
             Text(

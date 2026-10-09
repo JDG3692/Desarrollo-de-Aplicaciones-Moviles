@@ -87,8 +87,8 @@ fun CalendarioScreen(
         .map { it.fecha }
         .toSet()
 
-    // Color principal utilizado para los elementos destacados de la aplicación.
-    val azulPrincipal = Color(0xFF3F6FC4)
+    // Color principal unificado de Agenda Personal.
+    val azulPrincipal = Color(0xFF4B5F91)
 
     Column(
         modifier = Modifier
@@ -158,7 +158,7 @@ fun CalendarioScreen(
                 Icon(
                     imageVector = Icons.Default.ChevronLeft,
                     contentDescription = "Mes anterior",
-                    tint = Color(0xFF3F6FC4)
+                    tint = azulPrincipal
                 )
             }
 
@@ -188,7 +188,7 @@ fun CalendarioScreen(
                 Icon(
                     imageVector = Icons.Default.ChevronRight,
                     contentDescription = "Mes siguiente",
-                    tint = Color(0xFF3F6FC4)
+                    tint = azulPrincipal
                 )
             }
         }
@@ -391,7 +391,7 @@ fun CalendarioScreen(
         Text(
             text = fechaSeleccionadaTexto,
             fontSize = 16.sp,
-            color = Color(0xFF3F6FC4)
+            color = azulPrincipal
         )
 
         Spacer(

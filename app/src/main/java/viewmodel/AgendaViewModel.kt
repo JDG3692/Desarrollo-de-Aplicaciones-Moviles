@@ -97,4 +97,30 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             actividadDao.eliminarActividad(actividad)
         }
     }
+
+    // Elimina todas las actividades que ya están completadas.
+    fun eliminarActividadesCompletadas() {
+        viewModelScope.launch {
+            actividadDao.eliminarActividadesCompletadas()
+        }
+    }
+
+    // Elimina todas las actividades de un día específico.
+    fun eliminarActividadesDelDia(fecha: String) {
+        viewModelScope.launch {
+            actividadDao.eliminarActividadesDelDia(fecha)
+        }
+    }
+
+    // Elimina actividades dentro de un rango de fechas.
+    // La fecha inicial se incluye y la fecha final se excluye.
+    fun eliminarActividadesPorRango(
+        fechaInicio: String,
+        fechaFin: String
+    ) {
+        viewModelScope.launch {
+            actividadDao.eliminarActividadesPorRango(fechaInicio, fechaFin)
+        }
+    }
+
 }

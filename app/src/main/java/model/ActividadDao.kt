@@ -28,4 +28,20 @@ interface ActividadDao {
     // Elimina una actividad de la base de datos.
     @Delete
     suspend fun eliminarActividad(actividad: Actividad)
+
+    // Elimina todas las actividades completadas y devuelve la cantidad eliminada.
+    @Query("DELETE FROM actividades WHERE completada = 1")
+    suspend fun eliminarActividadesCompletadas(): Int
+
+    // Elimina todas las actividades de una fecha específica.
+    @Query("DELETE FROM actividades WHERE fecha = :fecha")
+    suspend fun eliminarActividadesDelDia(fecha: String): Int
+
+    // Elimina actividades dentro de un rango de fechas.
+    // La fecha inicial se incluye y la fecha final se excluye.
+    @Query("DELETE FROM actividades WHERE fecha >= :fechaInicio AND fecha < :fechaFin")
+    suspend fun eliminarActividadesPorRango(
+        fechaInicio: String,
+        fechaFin: String
+    ): Int
 }

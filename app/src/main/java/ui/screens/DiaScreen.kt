@@ -54,6 +54,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.filled.Delete
 
 
 
@@ -79,6 +80,36 @@ fun DiaScreen(
     // Controla si se debe mostrar el selector de hora.
     var mostrarSelectorHora by remember { mutableStateOf(false) }
 
+    // Controla la visibilidad del menú principal de la papelera.
+    var mostrarMenuPapelera by remember { mutableStateOf(false) }
+
+    // Controla la visibilidad del diálogo para eliminar actividades completadas.
+    var mostrarConfirmacionCompletadas by remember { mutableStateOf(false) }
+
+    // Controla la visibilidad del diálogo para elegir el tipo de eliminación por periodo.
+    var mostrarMenuPeriodo by remember { mutableStateOf(false) }
+
+    // Guarda el tipo de eliminación seleccionado por el usuario.
+    var tipoEliminacion by remember { mutableStateOf("") }
+
+    // Controla la visibilidad del diálogo de selección de actividad.
+    var mostrarSeleccionActividad by remember { mutableStateOf(false) }
+
+    // Controla la visibilidad del selector de fecha para eliminar por día.
+    var mostrarSelectorFechaEliminacion by remember { mutableStateOf(false) }
+
+    // Guarda la fecha seleccionada para la eliminación.
+    var fechaEliminacion by remember { mutableStateOf("") }
+
+    // Controla la visibilidad del diálogo de confirmación por periodo.
+    var mostrarConfirmacionPeriodo by remember { mutableStateOf(false) }
+
+    // Guarda las fechas inicial y final del rango que se eliminará.
+    var fechaInicioEliminacion by remember { mutableStateOf("") }
+    var fechaFinEliminacion by remember { mutableStateOf("") }
+
+    // Guarda el identificador de la actividad elegida para eliminar.
+    var actividadSeleccionadaId by remember { mutableStateOf<Int?>(null) }
 
     // Obtiene la fecha actual del dispositivo.
     val calendarioActual = Calendar.getInstance()
@@ -104,8 +135,8 @@ fun DiaScreen(
     // Observa las actividades almacenadas en Room.
     val actividades by agendaViewModel.actividades.collectAsState()
 
-    // Color principal utilizado para los elementos destacados de la aplicación.
-    val azulPrincipal = Color(0xFF3F6FC4)
+    // Color principal unificado de Agenda Personal.
+    val azulPrincipal = Color(0xFF4B5F91)
 
     // Contenedor principal de la pantalla.
     // Ocupa el espacio disponible, permite desplazamiento vertical
@@ -123,10 +154,33 @@ fun DiaScreen(
         Text(
             text = "Bienvenido a tu", fontSize = 28.sp, fontWeight = FontWeight.Bold
         )
-        // Nombre principal de la aplicación.
-        Text(
-            text = "Agenda Personal", fontSize = 32.sp, fontWeight = FontWeight.Bold
-        )
+
+        // Encabezado de la aplicación con acceso a la papelera.
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Nombre principal de la aplicación.
+            Text(
+                text = "Agenda Personal",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
+
+            // Acceso visual a las opciones de eliminación.
+            IconButton(
+                onClick = {
+                    mostrarMenuPapelera = true
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Papelera",
+                    tint = azulPrincipal
+                )
+            }
+        }
         // Espacio entre el encabezado y la información de la fecha.
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -162,7 +216,7 @@ fun DiaScreen(
                 Icon(
                     imageVector = Icons.Default.ChevronLeft,
                     contentDescription = "Día anterior",
-                    tint = Color(0xFF3F6FC4)
+                    tint = azulPrincipal
                 )
             }
 
@@ -185,7 +239,7 @@ fun DiaScreen(
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF3F6FC4),
+                    color = azulPrincipal,
                     textAlign = TextAlign.Center
                 )
                 // Muestra la fecha completa que está siendo consultada.
@@ -230,7 +284,7 @@ fun DiaScreen(
                 Icon(
                     imageVector = Icons.Default.ChevronRight,
                     contentDescription = "Día siguiente",
-                    tint = Color(0xFF3F6FC4)
+                    tint = azulPrincipal
                 )
             }
         }
@@ -287,7 +341,7 @@ fun DiaScreen(
                     Icon(
                         imageVector = Icons.Default.AccessTime,
                         contentDescription = "Seleccionar hora",
-                        tint = Color(0xFF3F6FC4)
+                        tint = azulPrincipal
                     )
 
                     // Espacio entre el icono y el texto.
@@ -603,6 +657,254 @@ fun DiaScreen(
             )
         }
 
+        // Muestra el menú principal de la papelera.
+        if (mostrarMenuPapelera) {
+            AlertDialog(
+                onDismissRequest = {
+
+                    mostrarMenuPapelera = false
+                },
+                containerColor = Color.White,
+                titleContentColor = Color(0xFF303030),
+
+                title = {
+                    Text("Papelera")
+                },
+                text = {
+                    Column {
+                        Text("¿Qué deseas eliminar?")
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Opción para eliminar las actividades completadas.
+                        OutlinedButton(
+                            onClick = {
+                                mostrarMenuPapelera = false
+                                mostrarConfirmacionCompletadas = true
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Eliminar actividades completadas")
+                        }
+
+                        // Opción para seleccionar una actividad o un periodo.
+                        OutlinedButton(
+                            onClick = {
+                                mostrarMenuPapelera = false
+                                mostrarMenuPeriodo = true
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Eliminar actividades por periodo")
+                        }
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            mostrarMenuPapelera = false
+                        }
+                    ) {
+                        Text("Cerrar")
+                    }
+                }
+            )
+        }
+
+        // Solicita confirmación antes de eliminar actividades completadas.
+        if (mostrarConfirmacionCompletadas) {
+            val cantidadCompletadas = actividades.count { it.completada }
+
+            AlertDialog(
+                onDismissRequest = {
+                    mostrarConfirmacionCompletadas = false
+                },
+                containerColor = Color.White,
+                titleContentColor = Color(0xFF303030),
+
+                title = {
+                    Text("Eliminar actividades completadas")
+                },
+                text = {
+                    Text(
+                        if (cantidadCompletadas == 0) {
+                            "No hay actividades completadas para eliminar."
+                        } else {
+                            "Se eliminarán $cantidadCompletadas actividades completadas " +
+                                    "de toda la agenda. Esta acción no se puede deshacer."
+                        }
+                    )
+                },
+
+                confirmButton = {
+                    Button(
+                        enabled = cantidadCompletadas > 0,
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF4B5F91),
+                            contentColor = Color.White
+                        ),
+                        onClick = {
+                            agendaViewModel.eliminarActividadesCompletadas()
+                            mostrarConfirmacionCompletadas = false
+                        }
+                    ) {
+                        Text("Eliminar")
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(
+                        onClick = {
+                            mostrarConfirmacionCompletadas = false
+                        }
+                    ) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
+
+        // Permite seleccionar el alcance de la eliminación.
+        if (mostrarMenuPeriodo) {
+            AlertDialog(
+                onDismissRequest = {
+                    mostrarMenuPeriodo = false
+                },
+                containerColor = Color.White,
+                titleContentColor = Color(0xFF303030),
+
+                title = {
+                    Text("Eliminar actividades por periodo")
+                },
+                text = {
+                    Column {
+                        Text("Selecciona qué deseas eliminar:")
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Permite seleccionar una actividad individual.
+                        OutlinedButton(
+                            onClick = {
+                                tipoEliminacion = "actividad"
+                                mostrarMenuPeriodo = false
+                                mostrarSeleccionActividad = true
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Una actividad")
+                        }
+
+                        // Permite elegir un día específico.
+                        OutlinedButton(
+                            onClick = {
+                                tipoEliminacion = "dia"
+                                mostrarMenuPeriodo = false
+                                mostrarSelectorFechaEliminacion = true
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Un día")
+                        }
+
+                        // Permite elegir un mes.
+                        OutlinedButton(
+                            onClick = {
+                                tipoEliminacion = "mes"
+                                mostrarMenuPeriodo = false
+                                mostrarSelectorFechaEliminacion = true
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Un mes")
+                        }
+
+                        // Permite elegir un año.
+                        OutlinedButton(
+                            onClick = {
+                                tipoEliminacion = "anio"
+                                mostrarMenuPeriodo = false
+                                mostrarSelectorFechaEliminacion = true
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Un año")
+                        }
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            mostrarMenuPeriodo = false
+                        }
+                    ) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
+
+        // Muestra todas las actividades para seleccionar una que se desea eliminar.
+        if (mostrarSeleccionActividad) {
+            AlertDialog(
+                onDismissRequest = {
+                    mostrarSeleccionActividad = false
+                    actividadSeleccionadaId = null
+                },
+                containerColor = Color.White,
+                titleContentColor = Color(0xFF303030),
+
+                title = {
+                    Text("Seleccionar actividad")
+                },
+                text = {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(350.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        // Informa si la agenda no contiene actividades.
+                        if (actividades.isEmpty()) {
+                            Text("No hay actividades en la agenda.")
+                        }
+
+                        // Muestra todas las actividades, sin limitarse al día consultado.
+                        actividades.sortedWith(
+                            compareBy<Actividad> { it.fecha }.thenBy { it.hora }
+                        ).forEach { actividad ->
+                            OutlinedButton(
+                                onClick = {
+                                    actividadSeleccionadaId = actividad.id
+                                    mostrarSeleccionActividad = false
+                                    mostrarConfirmacionPeriodo = true
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(actividad.titulo)
+                                    Text(
+                                        "${actividad.fecha} · ${actividad.hora}",
+                                        fontSize = 12.sp
+                                    )
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            mostrarSeleccionActividad = false
+                            actividadSeleccionadaId = null
+                        }
+                    ) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
+
         // Espacio entre la lista de actividades y los botones de navegación.
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -631,7 +933,7 @@ fun DiaScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_calendar_add_on),
                             contentDescription = "Programar actividad",
-                            tint = Color(0xFF3F6FC4)
+                            tint = azulPrincipal
                         )
                         // Espacio entre el icono y el texto.
                         Spacer(modifier = Modifier.width(6.dp))
@@ -640,13 +942,17 @@ fun DiaScreen(
                         Text(
                             text = "Programar\nactividad",
                             fontSize = 12.sp,
-                            color = Color(0xFF3F6FC4)
+                            color = azulPrincipal
                         )
                     }
                 }
             }
             // Botón para acceder al calendario mensual.
             Button(
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = azulPrincipal,
+                    contentColor = Color.White
+                ),
                 onClick = onAbrirCalendario,
 
                 modifier = Modifier

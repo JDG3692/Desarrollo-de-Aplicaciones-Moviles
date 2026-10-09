@@ -70,7 +70,7 @@ fun EditarActividadScreen(
     var mostrarDialogoEliminar by remember { mutableStateOf(false) }
 
     // Color principal utilizado en la aplicación.
-    val azulPrincipal = Color(0xFF3F6FC4)
+    val azulPrincipal = Color(0xFF4B5F91)
 
     // Obtiene el contexto necesario para mostrar los selectores de Android.
     val contexto = LocalContext.current
@@ -121,7 +121,7 @@ fun EditarActividadScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Volver"
+                    contentDescription = "Volver",
                 )
             }
 
@@ -440,7 +440,11 @@ fun EditarActividadScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(12.dp),
+            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                containerColor = azulPrincipal,
+                contentColor = Color.White
+            )
         ) {
             Text(
                 text = "Guardar cambios",
@@ -459,7 +463,10 @@ fun EditarActividadScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(12.dp),
+            colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                contentColor = azulPrincipal
+            )
         ) {
             Text(
                 text = "Eliminar actividad",
@@ -476,8 +483,11 @@ fun EditarActividadScreen(
     if (mostrarDialogoEliminar) {
         AlertDialog(
             onDismissRequest = {
+
                 mostrarDialogoEliminar = false
             },
+            containerColor = Color.White,
+            titleContentColor = Color(0xFF303030),
             title = {
                 Text("Eliminar actividad")
             },
@@ -487,6 +497,7 @@ fun EditarActividadScreen(
             confirmButton = {
                 Button(
                     onClick = {
+
                         // Elimina la actividad de Room.
                         agendaViewModel.eliminarActividad(actividad)
 
@@ -495,7 +506,11 @@ fun EditarActividadScreen(
 
                         // Regresa a la pantalla anterior.
                         onVolver()
-                    }
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = azulPrincipal,
+                        contentColor = Color.White
+                    )
                 ) {
                     Text("Eliminar")
                 }
@@ -505,7 +520,11 @@ fun EditarActividadScreen(
                     onClick = {
                         // Cierra el diálogo sin eliminar.
                         mostrarDialogoEliminar = false
-                    }
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = azulPrincipal
+                    )
                 ) {
                     Text("Cancelar")
                 }
