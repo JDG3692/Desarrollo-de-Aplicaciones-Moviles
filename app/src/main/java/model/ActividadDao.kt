@@ -19,7 +19,7 @@ interface ActividadDao {
 
     // Inserta una nueva actividad en la base de datos.
     @Insert
-    suspend fun insertarActividad(actividad: Actividad)
+    suspend fun insertarActividad(actividad: Actividad): Long
 
     // Actualiza los datos de una actividad existente.
     @Update
