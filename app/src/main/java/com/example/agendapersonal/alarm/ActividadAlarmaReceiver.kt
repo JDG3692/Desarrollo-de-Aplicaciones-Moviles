@@ -1,26 +1,30 @@
+
 package com.example.agendapersonal.alarm
 
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.example.agendapersonal.MainActivity
 
 // Recibe la señal de Android cuando llega la hora de una actividad.
 class ActividadAlarmaReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        // Obtiene los datos enviados al programar la alarma.
         val actividadId = intent.getIntExtra(EXTRA_ACTIVIDAD_ID, 0)
         val titulo = intent.getStringExtra(EXTRA_TITULO)
             ?: "Tienes una actividad pendiente"
 
-        // Comprueba que Android permita mostrar notificaciones.
+        if (actividadId <= 0) return
+
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
@@ -31,7 +35,6 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
             return
         }
 
-        // Crea el canal de notificaciones si todavía no existe.
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE)
                     as NotificationManager
@@ -43,16 +46,57 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Recordatorios de Agenda Personal"
-                setSound(
-                    android.provider.Settings.System.DEFAULT_NOTIFICATION_URI,
-                    null
-                )
+                setSound(Settings.System.DEFAULT_NOTIFICATION_URI, null)
             }
 
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Construye la notificación con el título de la actividad.
+        val intentCompletar = Intent(
+            context,
+            ActividadAlarmaAccionReceiver::class.java
+        ).apply {
+            action = ActividadAlarmaAccionReceiver.ACCION_COMPLETAR
+            putExtra(EXTRA_ACTIVIDAD_ID, actividadId)
+        }
+
+        val pendingIntentCompletar = PendingIntent.getBroadcast(
+            context,
+            actividadId,
+            intentCompletar,
+            PendingIntent.FLAG_UPDATE_CURRENT or
+                    PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val accionCompletar = NotificationCompat.Action.Builder(
+            android.R.drawable.checkbox_on_background,
+            "Completar",
+            pendingIntentCompletar
+        ).build()
+
+        val intentReprogramar = Intent(
+            context,
+            MainActivity::class.java
+        ).apply {
+            putExtra("abrir_actividad_id", actividadId)
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+
+        val pendingIntentReprogramar = PendingIntent.getActivity(
+            context,
+            actividadId + 100000,
+            intentReprogramar,
+            PendingIntent.FLAG_UPDATE_CURRENT or
+                    PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val accionReprogramar = NotificationCompat.Action.Builder(
+            android.R.drawable.ic_menu_edit,
+            "Reprogramar",
+            pendingIntentReprogramar
+        ).build()
+
         val notification = NotificationCompat.Builder(
             context,
             CHANNEL_ID
@@ -63,10 +107,12 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(false)
+            .setOngoing(true)
             .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+            .addAction(accionCompletar)
+            .addAction(accionReprogramar)
             .build()
 
-        // Utiliza el ID de la actividad para identificar su notificación.
         notificationManager.notify(actividadId, notification)
     }
 

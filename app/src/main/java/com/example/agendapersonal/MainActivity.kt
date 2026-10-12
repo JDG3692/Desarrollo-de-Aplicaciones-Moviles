@@ -14,8 +14,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.example.agendapersonal.ui.navigation.AppNavigation
 import com.example.agendapersonal.ui.theme.AgendaPersonalTheme
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 class MainActivity : ComponentActivity() {
+
+    private var actividadIdPendiente by mutableStateOf<Int?>(null)
 
     private val solicitudNotificaciones =
         registerForActivityResult(
@@ -27,14 +32,36 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         solicitarPermisos()
+
+        actividadIdPendiente =
+            intent.getIntExtra("abrir_actividad_id", 0)
+                .takeIf { it > 0 }
 
         setContent {
             AgendaPersonalTheme {
-                AppNavigation()
+                AppNavigation(
+                    actividadIdParaEditar = actividadIdPendiente
+                )
             }
         }
     }
+
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+
+        val actividadId = intent
+            .getIntExtra("abrir_actividad_id", 0)
+            .takeIf { it > 0 }
+
+        if (actividadId != null) {
+            actividadIdPendiente = actividadId
+        }
+    }
+
 
     private fun solicitarPermisos() {
         // Solicita permiso para mostrar notificaciones en Android 13 o superior.
