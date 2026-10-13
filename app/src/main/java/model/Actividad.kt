@@ -24,5 +24,9 @@ data class Actividad(
     val completada: Boolean = false,
 
     // Indica si la alarma de esta actividad está activa.
-    val alarmaActiva: Boolean = true
+    val alarmaActiva: Boolean = true,
+
+    // Indica si la actividad fue marcada como no completada.
+    val noCompletada: Boolean = false
+
 )

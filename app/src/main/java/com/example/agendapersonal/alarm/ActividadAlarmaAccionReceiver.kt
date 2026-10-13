@@ -30,7 +30,7 @@ class ActividadAlarmaAccionReceiver : BroadcastReceiver() {
             }
 
             ACCION_NO_COMPLETAR -> {
-                // Lo conectaremos después.
+                noCompletarActividad(context, actividadId)
             }
         }
     }
@@ -52,6 +52,44 @@ class ActividadAlarmaAccionReceiver : BroadcastReceiver() {
                 if (actividad != null && !actividad.completada) {
                     dao.actualizarActividad(
                         actividad.copy(completada = true)
+                    )
+
+                    ActividadAlarmaScheduler(context)
+                        .cancelar(actividadId)
+                }
+
+                val notificationManager =
+                    context.getSystemService(
+                        Context.NOTIFICATION_SERVICE
+                    ) as NotificationManager
+
+                notificationManager.cancel(actividadId)
+            } finally {
+                resultado.finish()
+            }
+        }
+    }
+
+    private fun noCompletarActividad(
+        context: Context,
+        actividadId: Int
+    ) {
+        val resultado = goAsync()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val dao = AgendaDatabase
+                    .obtenerBaseDeDatos(context)
+                    .actividadDao()
+
+                val actividad = dao.obtenerActividadPorId(actividadId)
+
+                if (actividad != null && !actividad.completada) {
+                    dao.actualizarActividad(
+                        actividad.copy(
+                            noCompletada = true,
+                            alarmaActiva = false
+                        )
                     )
 
                     ActividadAlarmaScheduler(context)

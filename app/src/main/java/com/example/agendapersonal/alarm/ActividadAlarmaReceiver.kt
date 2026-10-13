@@ -97,6 +97,28 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
             pendingIntentReprogramar
         ).build()
 
+        val intentNoCompletar = Intent(
+            context,
+            ActividadAlarmaAccionReceiver::class.java
+        ).apply {
+            action = ActividadAlarmaAccionReceiver.ACCION_NO_COMPLETAR
+            putExtra(EXTRA_ACTIVIDAD_ID, actividadId)
+        }
+
+        val pendingIntentNoCompletar = PendingIntent.getBroadcast(
+            context,
+            actividadId + 200000,
+            intentNoCompletar,
+            PendingIntent.FLAG_UPDATE_CURRENT or
+                    PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val accionNoCompletar = NotificationCompat.Action.Builder(
+            android.R.drawable.ic_menu_close_clear_cancel,
+            "No completar",
+            pendingIntentNoCompletar
+        ).build()
+
         val notification = NotificationCompat.Builder(
             context,
             CHANNEL_ID
@@ -111,6 +133,7 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
             .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
             .addAction(accionCompletar)
             .addAction(accionReprogramar)
+            .addAction(accionNoCompletar)
             .build()
 
         notificationManager.notify(actividadId, notification)

@@ -497,10 +497,16 @@ fun DiaScreen(
                 }.time
 
                 // Una actividad no completada queda vencida cuando su fecha ya pasó.
-                val actividadNoCompletada =
-                    !actividadCompletada && fechaActividad != null && fechaActividad.before(
-                        fechaHoyCalendario
-                    )
+            val actividadNoCompletada =
+                !actividadCompletada &&
+                        (
+                                actividad.noCompletada ||
+                                        (
+                                                fechaActividad != null &&
+                                                        fechaActividad.before(fechaHoyCalendario)
+                                                )
+                                )
+
                 // Tarjeta visual que contiene la información de una actividad.
                 Card(
                     onClick = {
