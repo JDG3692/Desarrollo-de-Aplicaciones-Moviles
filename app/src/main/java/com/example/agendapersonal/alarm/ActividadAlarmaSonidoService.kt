@@ -13,6 +13,8 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.example.agendapersonal.R
 import android.util.Log
+import android.media.AudioAttributes
+
 
 class ActividadAlarmaSonidoService : Service() {
 
@@ -52,16 +54,47 @@ class ActividadAlarmaSonidoService : Service() {
             return START_NOT_STICKY
         }
 
-        mediaPlayer = MediaPlayer.create(
-            this,
-            R.raw.agenda_alarma_elegante
-        )
+
+        mediaPlayer = MediaPlayer()
+
+        try {
+            val atributosAudio = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
+
+            mediaPlayer?.setAudioAttributes(atributosAudio)
+
+            resources.openRawResourceFd(
+                R.raw.agenda_alarma_elegante
+            ).use { archivo ->
+                mediaPlayer?.setDataSource(
+                    archivo.fileDescriptor,
+                    archivo.startOffset,
+                    archivo.length
+                )
+            }
+
+            mediaPlayer?.prepare()
+        } catch (e: Exception) {
+            Log.e(TAG, "No se pudo preparar el MP3", e)
+            detenerServicio()
+            return START_NOT_STICKY
+        }
+
 
         if (mediaPlayer == null) {
             Log.e(TAG, "No se pudo cargar el archivo MP3")
             detenerServicio()
             return START_NOT_STICKY
         }
+
+        mediaPlayer?.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
+        )
 
         Log.i(
             TAG,
