@@ -89,13 +89,6 @@ class ActividadAlarmaSonidoService : Service() {
             return START_NOT_STICKY
         }
 
-        mediaPlayer?.setAudioAttributes(
-            AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-        )
-
         Log.i(
             TAG,
             "MP3 cargado correctamente. Duración: ${mediaPlayer?.duration} ms"
