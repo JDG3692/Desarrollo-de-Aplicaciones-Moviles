@@ -87,12 +87,9 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
                 // Guarda el cambio en la base de datos.
                 actividadDao.actualizarActividad(actividadActualizada)
 
-                // Programa o cancela la alarma según el nuevo estado.
-                if (actividadActualizada.alarmaActiva) {
-                    alarmaScheduler.programar(actividadActualizada)
-                } else {
-                    alarmaScheduler.cancelar(id)
-                }
+                // Mantiene programado el recordatorio aunque la alarma
+                // adicional esté desactivada.
+                alarmaScheduler.programar(actividadActualizada)
             }
         }
     }

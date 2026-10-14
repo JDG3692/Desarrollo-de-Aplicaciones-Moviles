@@ -25,6 +25,11 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
 
         if (actividadId <= 0) return
 
+        val alarmaActiva = intent.getBooleanExtra(
+            EXTRA_ALARMA_ACTIVA,
+            false
+        )
+
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
@@ -143,5 +148,6 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
         const val EXTRA_ACTIVIDAD_ID = "actividad_id"
         const val EXTRA_TITULO = "actividad_titulo"
         const val CHANNEL_ID = "alarmas_actividades"
+        const val EXTRA_ALARMA_ACTIVA = "alarma_activa"
     }
 }

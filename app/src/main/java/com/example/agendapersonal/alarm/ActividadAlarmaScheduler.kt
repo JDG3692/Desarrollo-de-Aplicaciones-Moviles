@@ -20,7 +20,7 @@ class ActividadAlarmaScheduler(
 
     // Programa una alarma usando la fecha y hora de la actividad.
     fun programar(actividad: Actividad): Boolean {
-        if (!actividad.alarmaActiva || actividad.completada) {
+        if (actividad.completada) {
             cancelar(actividad.id)
             return true
         }
@@ -57,7 +57,8 @@ class ActividadAlarmaScheduler(
 
         val pendingIntent = crearPendingIntent(
             actividad.id,
-            actividad.titulo
+            actividad.titulo,
+            actividad.alarmaActiva
         )
 
         return try {
@@ -76,7 +77,8 @@ class ActividadAlarmaScheduler(
     fun cancelar(actividadId: Int) {
         val pendingIntent = crearPendingIntent(
             actividadId,
-            null
+            null,
+            false
         )
 
         alarmManager.cancel(pendingIntent)
@@ -86,7 +88,8 @@ class ActividadAlarmaScheduler(
     // Genera un PendingIntent identificable por el ID de la actividad.
     private fun crearPendingIntent(
         actividadId: Int,
-        titulo: String?
+        titulo: String?,
+        alarmaActiva: Boolean
     ): PendingIntent {
         val intent = Intent(
             context,
@@ -97,6 +100,11 @@ class ActividadAlarmaScheduler(
                 actividadId
             )
 
+            putExtra(
+                ActividadAlarmaReceiver.EXTRA_ALARMA_ACTIVA,
+                alarmaActiva
+            )
+
             if (titulo != null) {
                 putExtra(
                     ActividadAlarmaReceiver.EXTRA_TITULO,
@@ -104,6 +112,7 @@ class ActividadAlarmaScheduler(
                 )
             }
         }
+
 
         return PendingIntent.getBroadcast(
             context,
