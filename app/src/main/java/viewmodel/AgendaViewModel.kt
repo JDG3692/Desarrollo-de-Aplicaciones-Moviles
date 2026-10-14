@@ -95,14 +95,13 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     // Guarda los cambios realizados en una actividad existente.
+    // Guarda los cambios y conserva el recordatorio
+    // aunque el sonido personalizado esté desactivado.
     fun actualizarActividad(actividad: Actividad) {
-        // Ejecuta la actualización en una corrutina.
         viewModelScope.launch {
-            // Guarda los cambios en la base de datos.
             actividadDao.actualizarActividad(actividad)
 
-            // Actualiza la alarma según los nuevos datos.
-            if (actividad.alarmaActiva && !actividad.completada) {
+            if (!actividad.completada) {
                 alarmaScheduler.programar(actividad)
             } else {
                 alarmaScheduler.cancelar(actividad.id)
