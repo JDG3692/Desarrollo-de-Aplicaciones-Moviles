@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.example.agendapersonal.R
+import android.util.Log
 
 class ActividadAlarmaSonidoService : Service() {
 
@@ -57,9 +58,15 @@ class ActividadAlarmaSonidoService : Service() {
         )
 
         if (mediaPlayer == null) {
+            Log.e(TAG, "No se pudo cargar el archivo MP3")
             detenerServicio()
             return START_NOT_STICKY
         }
+
+        Log.i(
+            TAG,
+            "MP3 cargado correctamente. Duración: ${mediaPlayer?.duration} ms"
+        )
 
         mediaPlayer?.setOnCompletionListener {
             detenerServicio()
@@ -70,7 +77,13 @@ class ActividadAlarmaSonidoService : Service() {
             true
         }
 
-        mediaPlayer?.start()
+        try {
+            mediaPlayer?.start()
+            Log.i(TAG, "Reproducción del MP3 iniciada")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al iniciar la reproducción del MP3", e)
+            detenerServicio()
+        }
 
         return START_NOT_STICKY
     }
@@ -113,5 +126,6 @@ class ActividadAlarmaSonidoService : Service() {
     companion object {
         const val CHANNEL_ID = "reproduccion_alarma_personalizada"
         const val NOTIFICATION_ID = 7301
+        const val TAG = "AgendaAlarmaSonido"
     }
 }
