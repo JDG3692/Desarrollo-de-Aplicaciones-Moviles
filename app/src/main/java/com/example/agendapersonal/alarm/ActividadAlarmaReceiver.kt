@@ -142,7 +142,25 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
             .build()
 
         notificationManager.notify(actividadId, notification)
+
+
+        if (alarmaActiva) {
+            val intentSonido = Intent(
+                context,
+                ActividadAlarmaSonidoService::class.java
+            )
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ContextCompat.startForegroundService(
+                    context,
+                    intentSonido
+                )
+            } else {
+                context.startService(intentSonido)
+            }
+        }
     }
+
 
     companion object {
         const val EXTRA_ACTIVIDAD_ID = "actividad_id"
