@@ -17,6 +17,7 @@ import com.example.agendapersonal.ui.theme.AgendaPersonalTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.example.agendapersonal.alarm.ActividadAlarmaSonidoService
 
 class MainActivity : ComponentActivity() {
 
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        detenerAlarmaPersonalizada(intent)
 
 
         solicitarPermisos()
@@ -48,10 +50,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        detenerAlarmaPersonalizada(intent)
 
         val actividadId = intent
             .getIntExtra("abrir_actividad_id", 0)
@@ -61,7 +63,6 @@ class MainActivity : ComponentActivity() {
             actividadIdPendiente = actividadId
         }
     }
-
 
     private fun solicitarPermisos() {
         // Solicita permiso para mostrar notificaciones en Android 13 o superior.
@@ -77,6 +78,20 @@ class MainActivity : ComponentActivity() {
             )
         } else {
             solicitarPermisoAlarmasExactas()
+        }
+    }
+
+    private fun detenerAlarmaPersonalizada(intent: Intent?) {
+        if (intent?.getBooleanExtra("detener_alarma_personalizada", false) == true) {
+            val intentServicio = Intent(
+                this,
+                ActividadAlarmaSonidoService::class.java
+            ).apply {
+                action = ActividadAlarmaSonidoService.ACCION_DETENER
+            }
+
+            startService(intentServicio)
+            intent.removeExtra("detener_alarma_personalizada")
         }
     }
 
