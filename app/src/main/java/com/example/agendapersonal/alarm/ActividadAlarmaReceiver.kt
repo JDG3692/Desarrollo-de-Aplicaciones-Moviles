@@ -84,6 +84,7 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
             MainActivity::class.java
         ).apply {
             putExtra("abrir_actividad_id", actividadId)
+            putExtra("detener_alarma_personalizada", true)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or
                     Intent.FLAG_ACTIVITY_SINGLE_TOP
         }

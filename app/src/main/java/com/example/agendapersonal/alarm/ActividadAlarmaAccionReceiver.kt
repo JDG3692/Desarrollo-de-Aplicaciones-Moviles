@@ -34,11 +34,22 @@ class ActividadAlarmaAccionReceiver : BroadcastReceiver() {
             }
         }
     }
+    private fun detenerSonido(context: Context) {
+        val intent = Intent(
+            context,
+            ActividadAlarmaSonidoService::class.java
+        ).apply {
+            action = ActividadAlarmaSonidoService.ACCION_DETENER
+        }
+
+        context.startService(intent)
+    }
 
     private fun completarActividad(
         context: Context,
         actividadId: Int
     ) {
+        detenerSonido(context)
         val resultado = goAsync()
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -74,6 +85,7 @@ class ActividadAlarmaAccionReceiver : BroadcastReceiver() {
         context: Context,
         actividadId: Int
     ) {
+        detenerSonido(context)
         val resultado = goAsync()
 
         CoroutineScope(Dispatchers.IO).launch {

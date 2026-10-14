@@ -25,12 +25,18 @@ class ActividadAlarmaSonidoService : Service() {
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var audioManager: AudioManager
     private var solicitudFocoAudio: AudioFocusRequest? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private var inicioSonidoPendiente: Runnable? = null
 
     override fun onStartCommand(
         intent: Intent?,
         flags: Int,
         startId: Int
     ): Int {
+        if (intent?.action == ACCION_DETENER) {
+            detenerServicio()
+            return START_NOT_STICKY
+        }
         crearCanalServicio()
 
         val notificacion = NotificationCompat.Builder(
@@ -116,11 +122,27 @@ class ActividadAlarmaSonidoService : Service() {
                 return START_NOT_STICKY
             }
 
-            mediaPlayer?.start()
-            Log.i(TAG, "Reproducción del MP3 iniciada con foco de audio")
+            inicioSonidoPendiente = Runnable {
+                try {
+                    val reproductor = mediaPlayer ?: return@Runnable
+
+                    reproductor.start()
+                    Log.i(
+                        TAG,
+                        "Reproducción del MP3 iniciada después de 3 segundos"
+                    )
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error al iniciar la reproducción del MP3", e)
+                    detenerServicio()
+                }
+            }
+
+            handler.postDelayed(inicioSonidoPendiente!!, 5000)
+
+            Log.i(TAG, "Inicio del MP3 programado para dentro de 5 segundos")
 
         } catch (e: Exception) {
-            Log.e(TAG, "Error al iniciar la reproducción del MP3", e)
+            Log.e(TAG, "Error al programar la reproducción del MP3", e)
             detenerServicio()
             return START_NOT_STICKY
         }
@@ -186,8 +208,30 @@ class ActividadAlarmaSonidoService : Service() {
     }
 
     private fun detenerServicio() {
+        // Cancelar el inicio pendiente del MP3, si todavía no ha comenzado.
+        inicioSonidoPendiente?.let {
+            handler.removeCallbacks(it)
+        }
+        inicioSonidoPendiente = null
+
+        // Liberar el reproductor.
+        mediaPlayer?.setOnCompletionListener(null)
+        mediaPlayer?.setOnErrorListener(null)
         mediaPlayer?.release()
         mediaPlayer = null
+
+        // Liberar el foco de audio.
+        if (::audioManager.isInitialized) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                solicitudFocoAudio?.let {
+                    audioManager.abandonAudioFocusRequest(it)
+                }
+                solicitudFocoAudio = null
+            } else {
+                @Suppress("DEPRECATION")
+                audioManager.abandonAudioFocus(null)
+            }
+        }
 
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
@@ -204,6 +248,9 @@ class ActividadAlarmaSonidoService : Service() {
     companion object {
         const val CHANNEL_ID = "reproduccion_alarma_personalizada"
         const val NOTIFICATION_ID = 7301
+
+        const val ACCION_DETENER =
+            "com.example.agendapersonal.ACCION_DETENER_ALARMA"
         const val TAG = "AgendaAlarmaSonido"
     }
 }
