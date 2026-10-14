@@ -80,6 +80,13 @@ class ActividadAlarmaSonidoService : Service() {
         try {
             mediaPlayer?.start()
             Log.i(TAG, "Reproducción del MP3 iniciada")
+            Thread {
+                Thread.sleep(3000)
+
+                val reproduciendo = mediaPlayer?.isPlaying
+                val posicion = mediaPlayer?.currentPosition
+
+            }.start()
         } catch (e: Exception) {
             Log.e(TAG, "Error al iniciar la reproducción del MP3", e)
             detenerServicio()
