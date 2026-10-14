@@ -14,11 +14,17 @@ import androidx.core.app.NotificationCompat
 import com.example.agendapersonal.R
 import android.util.Log
 import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
+import android.os.Handler
+import android.os.Looper
 
 
 class ActividadAlarmaSonidoService : Service() {
 
     private var mediaPlayer: MediaPlayer? = null
+    private lateinit var audioManager: AudioManager
+    private var solicitudFocoAudio: AudioFocusRequest? = null
 
     override fun onStartCommand(
         intent: Intent?,
@@ -104,21 +110,60 @@ class ActividadAlarmaSonidoService : Service() {
         }
 
         try {
+            if (!solicitarFocoAudio()) {
+                Log.e(TAG, "No se pudo obtener el foco de audio")
+                detenerServicio()
+                return START_NOT_STICKY
+            }
+
             mediaPlayer?.start()
-            Log.i(TAG, "Reproducción del MP3 iniciada")
-            Thread {
-                Thread.sleep(3000)
+            Log.i(TAG, "Reproducción del MP3 iniciada con foco de audio")
 
-                val reproduciendo = mediaPlayer?.isPlaying
-                val posicion = mediaPlayer?.currentPosition
-
-            }.start()
         } catch (e: Exception) {
             Log.e(TAG, "Error al iniciar la reproducción del MP3", e)
             detenerServicio()
+            return START_NOT_STICKY
         }
 
         return START_NOT_STICKY
+    }
+
+    private fun solicitarFocoAudio(): Boolean {
+        audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val atributosAudio = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
+
+            solicitudFocoAudio = AudioFocusRequest.Builder(
+                AudioManager.AUDIOFOCUS_GAIN
+            )
+                .setAudioAttributes(atributosAudio)
+                .setAcceptsDelayedFocusGain(false)
+                .setOnAudioFocusChangeListener { cambio ->
+                    Log.i(TAG, "Cambio de foco de audio: $cambio")
+                }
+                .build()
+
+            val resultado = audioManager.requestAudioFocus(
+                solicitudFocoAudio!!
+            )
+
+            Log.i(TAG, "Resultado de solicitud de foco: $resultado")
+
+            return resultado == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+        }
+
+        @Suppress("DEPRECATION")
+        val resultado = audioManager.requestAudioFocus(
+            null,
+            AudioManager.STREAM_ALARM,
+            AudioManager.AUDIOFOCUS_GAIN
+        )
+
+        return resultado == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
     }
 
     private fun crearCanalServicio() {
