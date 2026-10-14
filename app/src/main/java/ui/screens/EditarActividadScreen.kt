@@ -424,10 +424,18 @@ fun EditarActividadScreen(
                     // No permite guardar una actividad de hoy con una hora que ya pasó.
                 } else {
                     // Conserva el estado de completada y de alarma de la actividad.
+                    // Actualiza los datos y restablece el estado de la actividad
+                    // al editarla para una nueva fecha u hora.
                     val actividadActualizada = actividad.copy(
                         titulo = titulo,
                         fecha = fecha,
-                        hora = hora
+                        hora = hora,
+                        noCompletada = false,
+                        alarmaActiva = if (actividad.noCompletada) {
+                            true
+                        } else {
+                            actividad.alarmaActiva
+                        }
                     )
 
                     // Guarda los cambios en Room.
