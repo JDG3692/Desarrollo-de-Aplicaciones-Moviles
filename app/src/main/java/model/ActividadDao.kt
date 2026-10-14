@@ -21,6 +21,25 @@ interface ActividadDao {
     @Query("SELECT * FROM actividades WHERE id = :actividadId LIMIT 1")
     suspend fun obtenerActividadPorId(actividadId: Int): Actividad?
 
+    // Obtiene todas las actividades completadas antes de eliminarlas.
+    @Query("SELECT * FROM actividades WHERE completada = 1")
+    suspend fun obtenerActividadesCompletadas(): List<Actividad>
+
+    // Obtiene las actividades de un día específico.
+    @Query("SELECT * FROM actividades WHERE fecha = :fecha")
+    suspend fun obtenerActividadesDelDia(fecha: String): List<Actividad>
+
+    // Obtiene las actividades incluidas en un rango de fechas.
+    // La fecha inicial se incluye y la final se excluye.
+    @Query(
+        "SELECT * FROM actividades " +
+                "WHERE fecha >= :fechaInicio AND fecha < :fechaFin"
+    )
+    suspend fun obtenerActividadesPorRango(
+        fechaInicio: String,
+        fechaFin: String
+    ): List<Actividad>
+
     // Inserta una nueva actividad en la base de datos.
     @Insert
     suspend fun insertarActividad(actividad: Actividad): Long

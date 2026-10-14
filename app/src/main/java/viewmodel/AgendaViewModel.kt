@@ -123,19 +123,20 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     // Elimina todas las actividades que ya están completadas.
+
+    // Elimina todas las actividades completadas.
     fun eliminarActividadesCompletadas() {
         viewModelScope.launch {
-            // Busca las actividades completadas en la lista actual.
-            val actividadesCompletadas = actividades.value.filter {
-                it.completada
-            }
+            // Consulta directamente Room para obtener todos los registros.
+            val actividadesCompletadas =
+                actividadDao.obtenerActividadesCompletadas()
 
-            // Cancela las alarmas de las actividades que se eliminarán.
+            // Cancela cada alarma antes de eliminar los registros.
             actividadesCompletadas.forEach { actividad ->
                 alarmaScheduler.cancelar(actividad.id)
             }
 
-            // Elimina las actividades completadas de la base de datos.
+            // Elimina las actividades completadas de Room.
             actividadDao.eliminarActividadesCompletadas()
         }
     }
@@ -143,41 +144,48 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
     // Elimina todas las actividades de un día específico.
     fun eliminarActividadesDelDia(fecha: String) {
         viewModelScope.launch {
-            // Busca las actividades correspondientes a ese día.
-            val actividadesDelDia = actividades.value.filter {
-                it.fecha == fecha
-            }
+            // Consulta directamente Room para obtener los registros del día.
+            val actividadesDelDia =
+                actividadDao.obtenerActividadesDelDia(fecha)
 
-            // Cancela las alarmas de las actividades que se eliminarán.
+            // Cancela todas las alarmas asociadas.
             actividadesDelDia.forEach { actividad ->
                 alarmaScheduler.cancelar(actividad.id)
             }
 
-            // Elimina las actividades del día de la base de datos.
+            // Elimina las actividades del día de Room.
             actividadDao.eliminarActividadesDelDia(fecha)
         }
     }
 
     // Elimina actividades dentro de un rango de fechas.
     // La fecha inicial se incluye y la fecha final se excluye.
+
+    // Elimina las actividades incluidas en un rango de fechas.
     fun eliminarActividadesPorRango(
         fechaInicio: String,
         fechaFin: String
     ) {
         viewModelScope.launch {
-            // Busca las actividades incluidas en el rango.
-            val actividadesDelRango = actividades.value.filter {
-                it.fecha >= fechaInicio && it.fecha < fechaFin
-            }
+            // Consulta directamente Room para obtener los registros del rango.
+            val actividadesDelRango =
+                actividadDao.obtenerActividadesPorRango(
+                    fechaInicio,
+                    fechaFin
+                )
 
-            // Cancela las alarmas de las actividades que se eliminarán.
+            // Cancela todas las alarmas de los registros afectados.
             actividadesDelRango.forEach { actividad ->
                 alarmaScheduler.cancelar(actividad.id)
             }
 
-            // Elimina las actividades del rango de la base de datos.
-            actividadDao.eliminarActividadesPorRango(fechaInicio, fechaFin)
+            // Elimina los registros del rango de Room.
+            actividadDao.eliminarActividadesPorRango(
+                fechaInicio,
+                fechaFin
+            )
         }
     }
+
 
 }
