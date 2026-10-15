@@ -100,37 +100,25 @@ Room administra las actividades guardadas localmente. Los componentes principale
 - **ActividadAlarmaSonidoService.kt:** reproduce el sonido personalizado cuando está habilitado.
 - **ActividadAlarmaBootReceiver.kt:** restaura las alarmas de actividades pendientes al reiniciar y cuando cambia la hora o zona horaria.
 
-## 8. Diseño y wireframes
+## 8. Diseño y wireframes anotados
 
-Los siguientes wireframes son referencias del diseño inicial. La interfaz final puede diferir en algunos detalles de presentación y controles.
+Los wireframes siguientes documentan las cuatro pantallas principales de Agenda Personal. Cada lámina incorpora indicadores y explicaciones de los controles, junto con notas sobre el comportamiento de la pantalla.
 
-### Wireframe 1 — Día / Hoy
+### Wireframe 01 — Día / Inicio
 
-![Wireframe 1 — Día / Hoy](docs/wireframes/Wireframe%201.png)
+![Wireframe 01 — Día / Inicio](docs/wireframes/AgendaWireframe01.jpg)
 
-Representa la pantalla diaria, la navegación entre fechas y la lista de actividades.
+### Wireframe 02 — Programar actividad
 
-### Wireframe 2 — Programar actividad
+![Wireframe 02 — Programar actividad](docs/wireframes/AgendaWireframe02.jpg)
 
-![Wireframe 2 — Programar actividad](docs/wireframes/Wireframe%202.png)
+### Wireframe 03 — Calendario
 
-Representa el formulario de título, fecha y hora.
+![Wireframe 03 — Calendario](docs/wireframes/AgendaWireframe03.jpg)
 
-### Wireframe 3 — Calendario
+### Wireframe 04 — Editar actividad
 
-![Wireframe 3 — Calendario](docs/wireframes/Wireframe%203.png)
-
-Representa la consulta mensual y la selección de una fecha.
-
-### Wireframe 4 — Editar actividad
-
-![Wireframe 4 — Editar actividad](docs/wireframes/Wireframe%204.png)
-
-Representa la edición de una actividad existente.
-
-### Wireframes completos
-
-![Wireframes completos](docs/wireframes/Wireframes.png)
+![Wireframe 04 — Editar actividad](docs/wireframes/AgendaWireframe04.jpg)
 
 ## 9. Validaciones y alcance
 
