@@ -646,6 +646,10 @@ fun DiaScreen(
                 onDismissRequest = {
                     mostrarAvisoActividadCompletada = false
                 },
+                containerColor = Color.White,
+                titleContentColor = Color(0xFF303030),
+                textContentColor = Color(0xFF303030),
+
                 title = {
                     Text("Actividad completada")
                 },
