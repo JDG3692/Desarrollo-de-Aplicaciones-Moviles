@@ -470,6 +470,7 @@ fun CalendarioScreen(
                         // cuando su fecha ya pasó.
                         val actividadNoCompletada =
                             !actividadCompletada &&
+                                    actividad.noCompletada ||
                                     fechaActividad != null &&
                                     fechaActividad.before(fechaHoy)
 
