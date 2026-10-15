@@ -186,5 +186,4 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-
 }

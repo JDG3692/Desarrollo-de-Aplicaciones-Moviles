@@ -17,6 +17,9 @@ interface ActividadDao {
     @Query("SELECT * FROM actividades ORDER BY fecha, hora")
     fun obtenerActividades(): Flow<List<Actividad>>
 
+    @Query("SELECT * FROM actividades")
+    suspend fun obtenerTodasLasActividades(): List<Actividad>
+
     // Busca una actividad específica por su identificador.
     @Query("SELECT * FROM actividades WHERE id = :actividadId LIMIT 1")
     suspend fun obtenerActividadPorId(actividadId: Int): Actividad?
