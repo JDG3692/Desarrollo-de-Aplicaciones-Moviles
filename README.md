@@ -102,7 +102,23 @@ Room administra las actividades guardadas localmente. Los componentes principale
 
 ## 8. Diseño y wireframes anotados
 
-Se están incorporando las cuatro láminas anotadas de las pantallas principales de Agenda Personal. Los archivos se añadirán a esta sección a medida que se complete su carga al repositorio.
+Las siguientes láminas documentan las cuatro pantallas principales de Agenda Personal. Cada una incluye indicadores y descripciones de los controles, con una paleta azul grisácea consistente con la interfaz de la aplicación.
+
+### Wireframe 01 — Día / Inicio
+
+![Wireframe 01 — Día / Inicio](docs/wireframes/Wireframe%20de%20Agenda%20Personal.png)
+
+### Wireframe 02 — Programar actividad
+
+![Wireframe 02 — Programar actividad](docs/wireframes/Wireframe%2002_%20Programar%20actividad.png)
+
+### Wireframe 03 — Calendario
+
+![Wireframe 03 — Calendario](docs/wireframes/Wireframe%20del%20calendario%20mensual.png)
+
+### Wireframe 04 — Editar actividad
+
+![Wireframe 04 — Editar actividad](docs/wireframes/Gu%C3%ADa%20wireframe_%20Editar%20actividad.png)
 
 ## 9. Validaciones y alcance
 
