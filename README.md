@@ -2,107 +2,97 @@
 
 ## 1. Descripción del proyecto
 
-**Agenda Personal** es una aplicación móvil para Android que permite organizar actividades y compromisos laborales, personales y académicos. Incluye consulta diaria, programación de actividades futuras, calendario mensual, edición y eliminación de actividades, estados de cumplimiento y recordatorios mediante alarmas y notificaciones.
+Desarrollé **Agenda Personal** como una aplicación móvil para Android que me permite organizar actividades personales, académicas y laborales. Implementé una pantalla diaria, programación de actividades futuras, un calendario mensual, edición y eliminación de actividades, estados de cumplimiento y recordatorios mediante alarmas y notificaciones.
 
-Las actividades se guardan localmente con **Room**, por lo que permanecen almacenadas en la base de datos del dispositivo. El proyecto está diseñado para funcionar sin depender de una cuenta ni de un servicio externo.
+Guardo las actividades localmente con **Room**, de modo que permanecen en la base de datos del dispositivo. La aplicación no necesita una cuenta ni un servicio en la nube para administrar las actividades.
 
-## 2. Problema que aborda
+## 2. Problema y propósito
 
-Las tareas y compromisos se distribuyen durante el día, la semana y el mes. Depender únicamente de la memoria o de distintos medios de registro dificulta mantenerlos organizados y recordar cuándo deben realizarse. Agenda Personal busca ofrecer una forma directa de registrar, consultar y seguir actividades desde una aplicación móvil sencilla.
+Busqué reunir en una sola aplicación el registro y seguimiento de actividades que se distribuyen durante el día y en fechas futuras. La agenda permite consultar qué tengo programado, reconocer el estado de cada actividad y recibir un recordatorio a la hora indicada.
 
-## 3. Objetivos
+## 3. Objetivos del proyecto
 
-### Objetivo general
+Mi objetivo general es desarrollar una aplicación Android sencilla para registrar, consultar y dar seguimiento a actividades con almacenamiento local y recordatorios.
 
-Desarrollar una aplicación Android que facilite la organización y el seguimiento de actividades mediante una vista diaria, un calendario mensual, almacenamiento local y recordatorios.
+Para cumplir ese objetivo, implementé:
 
-### Objetivos específicos
+- La consulta diaria y la navegación entre fechas.
+- El registro rápido de actividades para el día consultado.
+- La programación de actividades en fechas futuras.
+- La consulta de actividades desde un calendario mensual.
+- La edición de actividades que aún no están completadas.
+- Los estados completada y no completada.
+- La eliminación individual y por diferentes conjuntos de actividades o periodos.
+- La persistencia local y los recordatorios mediante alarmas y notificaciones.
 
-- Consultar actividades correspondientes a una fecha y navegar entre días.
-- Registrar actividades para el día consultado y programarlas para fechas futuras.
-- Consultar actividades mediante un calendario mensual.
-- Editar actividades que no estén completadas.
-- Completar, marcar como no completadas y eliminar actividades.
-- Mantener las actividades ordenadas por fecha y hora.
-- Conservar los datos localmente.
-- Avisar al usuario mediante alarmas y notificaciones cuando llega la hora programada.
-
-## 4. Tecnologías
+## 4. Tecnologías utilizadas
 
 - **Plataforma:** Android.
 - **Lenguaje:** Kotlin.
-- **Entorno:** Android Studio.
+- **Entorno de desarrollo:** Android Studio.
 - **Interfaz:** Jetpack Compose y Material 3.
-- **Persistencia:** Room.
-- **Arquitectura de estado:** ViewModel, StateFlow y corrutinas.
-- **Navegación:** Navigation Compose.
+- **Persistencia local:** Room.
+- **Estado y operaciones de datos:** ViewModel, StateFlow y corrutinas.
+- **Navegación entre pantallas:** Navigation Compose.
 - **Recordatorios:** AlarmManager, BroadcastReceiver, notificaciones de Android y un servicio para el sonido personalizado.
 
-La aplicación funciona de forma local. Sincronización entre dispositivos, cuentas de usuario y servicios en la nube quedan fuera del alcance actual.
+Mantengo el alcance del proyecto en el dispositivo. No he implementado cuentas de usuario, sincronización entre dispositivos ni almacenamiento en la nube.
 
-## 5. Pantallas y comportamiento
+## 5. Pantallas principales
 
-### Día
+### Día / Inicio
 
-Permite consultar las actividades de la fecha seleccionada, navegar al día anterior o siguiente y registrar rápidamente una actividad para el día consultado. Las actividades se muestran en orden cronológico y reflejan su estado. Las actividades completadas no se pueden editar ni reprogramar.
+En esta pantalla consulto las actividades de la fecha seleccionada y puedo avanzar o retroceder entre días. También puedo crear una actividad rápida para el día que estoy consultando, seleccionar su hora y abrir las pantallas de programación y calendario.
+
+Cada actividad muestra su hora, título y estado. Las actividades completadas se identifican con el texto correspondiente y un check verde; las marcadas como no completadas muestran ese estado y una X roja. Las actividades pendientes muestran un icono de alarma que permite activar o desactivar el sonido personalizado del recordatorio.
+
+La papelera abre opciones para eliminar actividades completadas o seleccionar actividades y periodos para eliminar. Las operaciones de eliminación que requieren confirmación muestran un diálogo antes de ejecutarse.
 
 ### Programar actividad
 
-Permite registrar una actividad mediante título, fecha y hora. La programación de actividades nuevas desde esta pantalla comienza mañana; no se admiten fechas pasadas ni el día actual.
+En esta pantalla puedo escribir el título de una actividad, escoger una fecha futura y elegir la hora. No permito seleccionar el día actual ni fechas anteriores desde este formulario. Al guardar, la actividad se almacena en Room y la aplicación regresa a la pantalla anterior.
 
 ### Calendario
 
-Presenta una vista mensual con indicadores en los días que contienen actividades. Al seleccionar una fecha, se consultan las actividades correspondientes ordenadas por hora.
+Muestro el calendario mensual con un punto debajo de los días que tienen actividades. Al seleccionar un día, consulto la lista de actividades de esa fecha ordenada por hora. Las tarjetas reflejan si una actividad está pendiente, completada o marcada como no completada; cuando corresponde, también muestran el icono para activar o desactivar la alarma.
 
 ### Editar actividad
 
-Permite modificar el título, la fecha y la hora de una actividad no completada. No admite fechas pasadas y, para el día actual, no permite una hora pasada. Las actividades completadas están protegidas contra edición y reprogramación.
+Desde una actividad no completada puedo abrir esta pantalla para modificar el título, la fecha y la hora, guardar los cambios o eliminarla. Valido las fechas para impedir fechas pasadas y, cuando la actividad queda para hoy, impido guardar una hora que ya pasó. Antes de eliminar una actividad individual, muestro una confirmación.
 
-### Alarmas y notificaciones
+Las actividades completadas están protegidas contra edición desde las pantallas de consulta.
 
-La aplicación programa alarmas para las actividades y muestra una notificación cuando llega la hora. La notificación incluye las acciones **Completar**, **Reprogramar** y **No completar**. El sonido predeterminado de la notificación es independiente del sonido personalizado opcional.
+## 6. Alarmas, sonido y notificaciones
 
-Las alarmas se cancelan cuando corresponde, por ejemplo al completar o eliminar una actividad. Un receptor de arranque recupera de Room las actividades pendientes y vuelve a programar sus alarmas después del reinicio del dispositivo y ante cambios de hora o zona horaria. La restauración después del reinicio se comprobó en el emulador con dos alarmas pendientes.
+Implementé recordatorios asociados a la fecha y hora de cada actividad. Cuando llega la hora programada, Android muestra una notificación con el título de la actividad y estas acciones:
 
-> **Permisos:** Android puede solicitar permiso para mostrar notificaciones y acceso para programar alarmas exactas. El funcionamiento de los recordatorios depende de que los permisos requeridos estén concedidos y de las restricciones del sistema operativo y del fabricante.
+- **Completar:** marca la actividad como completada, cancela su alarma y descarta la notificación.
+- **Reprogramar:** abre Agenda Personal directamente en la pantalla de edición de esa actividad. Desde allí puedo cambiar la fecha o la hora y guardar los cambios; la acción de la notificación no cambia la fecha por sí sola.
+- **No completar:** guarda el estado de no completada, desactiva el sonido personalizado para esa actividad, cancela su alarma pendiente y descarta la notificación.
 
-## 6. Funcionalidades implementadas
+En las tarjetas de las pantallas Día y Calendario, el botón con el icono de alarma activa o desactiva el **sonido personalizado** que se reproduce cuando vence la actividad. No equivale a cancelar el recordatorio: mientras la actividad siga pendiente y tenga una hora futura válida, la notificación puede aparecer aunque el sonido personalizado esté desactivado. La notificación usa el sonido predeterminado del sistema.
 
-| Funcionalidad | Estado |
-|---|---|
-| Consulta diaria y navegación entre fechas | Implementada |
-| Registro rápido para el día consultado | Implementada |
-| Programación de actividades futuras | Implementada |
-| Calendario mensual con indicadores | Implementada |
-| Consulta de actividades por fecha | Implementada |
-| Edición de actividades no completadas | Implementada |
-| Validación de fechas y horas | Implementada |
-| Completado y estado «No completada» | Implementada |
-| Eliminación individual y masiva por alcance/periodo | Implementada |
-| Protección de actividades completadas | Implementada |
-| Persistencia local con Room | Implementada |
-| Programación y cancelación de alarmas | Implementada |
-| Notificaciones del sistema con acciones | Implementada |
-| Sonido personalizado opcional | Implementado |
-| Restauración de alarmas después del reinicio | Implementada y comprobada en emulador |
+También incorporé un servicio que reproduce y detiene el sonido personalizado y un receptor que vuelve a programar las alarmas pendientes después del reinicio del dispositivo y cuando cambia la fecha/hora del sistema o la zona horaria, según los eventos registrados por Android. Comprobé en el emulador la restauración después de reiniciar con dos alarmas pendientes; ambas volvieron a generar sus recordatorios sin tener que abrir manualmente la aplicación.
 
-## 7. Persistencia y estructura principal
+El funcionamiento de alarmas y notificaciones depende de los permisos de Android y de las restricciones de la versión del sistema y del fabricante. La aplicación solicita permiso para notificaciones en Android 13 o superior y dirige a los ajustes del sistema para conceder el acceso a alarmas exactas cuando hace falta.
 
-Room administra las actividades guardadas localmente. Los componentes principales son:
+## 7. Persistencia y componentes principales
 
-- **Actividad.kt:** entidad que representa una actividad e incluye sus datos y estados.
-- **ActividadDao.kt:** consultas y operaciones de inserción, actualización y eliminación.
-- **AgendaDatabase.kt:** configuración de Room y migraciones de la base de datos.
-- **AgendaViewModel.kt:** conecta los datos con la interfaz y coordina las operaciones.
-- **ActividadAlarmaScheduler.kt:** programa y cancela alarmas.
-- **ActividadAlarmaReceiver.kt:** muestra la notificación cuando vence una actividad.
-- **ActividadAlarmaAccionReceiver.kt:** procesa las acciones de la notificación.
-- **ActividadAlarmaSonidoService.kt:** reproduce el sonido personalizado cuando está habilitado.
-- **ActividadAlarmaBootReceiver.kt:** restaura las alarmas de actividades pendientes al reiniciar y cuando cambia la hora o zona horaria.
+Uso Room para guardar las actividades localmente. Los principales componentes que desarrollé son:
 
-## 8. Diseño y wireframes anotados
+- **Actividad.kt:** representa una actividad, sus datos y sus estados.
+- **ActividadDao.kt:** contiene las consultas y operaciones sobre las actividades.
+- **AgendaDatabase.kt:** configura Room y la base de datos.
+- **AgendaViewModel.kt:** conecta los datos almacenados con la interfaz y coordina las operaciones.
+- **ActividadAlarmaScheduler.kt:** programa y cancela las alarmas.
+- **ActividadAlarmaReceiver.kt:** presenta la notificación cuando llega la hora de una actividad.
+- **ActividadAlarmaAccionReceiver.kt:** procesa las acciones Completar y No completar de la notificación.
+- **ActividadAlarmaSonidoService.kt:** administra la reproducción del sonido personalizado.
+- **ActividadAlarmaBootReceiver.kt:** vuelve a programar alarmas pendientes en respuesta a los eventos de sistema registrados.
 
-Las siguientes láminas documentan las cuatro pantallas principales de Agenda Personal. Cada una incluye indicadores y descripciones de los controles, con una paleta azul grisácea consistente con la interfaz de la aplicación.
+## 8. Wireframes anotados
+
+Preparé cuatro láminas anotadas para documentar las pantallas principales. Usé una paleta azul grisácea coherente con la interfaz y agregué indicadores que explican la función de los controles.
 
 ### Wireframe 01 — Día / Inicio
 
@@ -120,27 +110,28 @@ Las siguientes láminas documentan las cuatro pantallas principales de Agenda Pe
 
 ![Wireframe 04 — Editar actividad](docs/wireframes/Gu%C3%ADa%20wireframe_%20Editar%20actividad.png)
 
-## 9. Validaciones y alcance
+## 9. Validaciones y límites actuales
 
-- Las actividades se almacenan localmente en el dispositivo.
-- Las actividades completadas no se pueden editar ni reprogramar.
-- Las actividades vencidas que siguen sin completar se identifican como «No completada».
-- La creación rápida desde Día corresponde al día consultado.
-- La programación desde la pantalla correspondiente es para fechas futuras.
-- Las operaciones de eliminación masiva requieren confirmación.
-- Las funciones de sincronización, cuentas, recurrencia, estadísticas y copias de seguridad en la nube no forman parte del alcance actual.
+- Las actividades se guardan en la base de datos local del dispositivo.
+- No permito editar una actividad que ya esté completada.
+- Las actividades vencidas sin completar se identifican como no completadas.
+- El registro rápido desde Día usa la fecha que tengo seleccionada.
+- El formulario Programar actividad está destinado a fechas futuras.
+- Al editar una actividad para hoy, no permito guardar una hora pasada.
+- La eliminación individual incluye una confirmación y las opciones de eliminación por periodo muestran pasos de confirmación cuando corresponde.
+- No he implementado sincronización, inicio de sesión, actividades recurrentes, estadísticas ni copias de seguridad en la nube.
 
 ## 10. Pruebas realizadas
 
-Durante el desarrollo se realizaron pruebas funcionales de persistencia, creación, edición, completado y eliminación de actividades; notificaciones con el sonido personalizado activado y desactivado; acciones desde la notificación; cancelación de alarmas; cambios de hora y zona horaria; y restauración después de reiniciar el emulador. El usuario confirmó que dos alarmas pendientes volvieron a sonar y mostrar notificaciones después del reinicio sin abrir manualmente la aplicación.
+Durante el desarrollo comprobé los flujos de creación, persistencia, edición, completado y eliminación de actividades; el funcionamiento de alarmas y notificaciones con el sonido personalizado activado y desactivado; las acciones disponibles en las notificaciones; la cancelación de alarmas; y la restauración después de reiniciar el emulador. En una prueba de reinicio con dos alarmas pendientes, comprobé que ambas generaron nuevamente sus recordatorios sin abrir la aplicación manualmente.
 
-La versión debe compilarse y comprobarse nuevamente después de cualquier cambio final antes de generar el entregable.
+Estas pruebas corresponden a las comprobaciones realizadas durante el desarrollo; no representan una certificación en todos los modelos de dispositivo ni en todas las versiones de Android.
 
-## 11. Registro de cambios
+## 11. Historial general del desarrollo
 
-- Se implementaron las pantallas de Día, Programar actividad, Calendario y Editar actividad.
-- Se incorporó persistencia local con Room y migraciones de la base de datos.
-- Se añadieron validaciones de fecha y hora, estados de actividad y eliminación por diferentes alcances.
-- Se integraron alarmas exactas, notificaciones con acciones y sonido personalizado opcional.
-- Se agregó la restauración de alarmas pendientes después del reinicio y ante cambios de hora o zona horaria.
-- Se actualizaron las validaciones y los flujos de reprogramación de actividades no completadas.
+- Implementé las pantallas Día / Inicio, Programar actividad, Calendario y Editar actividad.
+- Incorporé la persistencia local con Room.
+- Añadí la validación de fechas y horas, estados de actividad y opciones de eliminación.
+- Integré las alarmas, las notificaciones con acciones y el sonido personalizado opcional.
+- Añadí la restauración de alarmas pendientes ante los eventos de sistema registrados.
+- Preparé wireframes anotados para documentar las cuatro pantallas principales.
