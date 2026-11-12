@@ -9,7 +9,7 @@ Este documento propone los cambios más importantes para la app, ordenados por p
 | Prioridad | Fase | Qué resuelve | Esfuerzo estimado |
 |---|---|---|---|
 | 🔴 Alta | 1. Bugs de notificaciones y navegación | Notificación que no se puede quitar y pantalla de edición que se reabre sola | Bajo |
-| 🔴 Alta | 2. Fiabilidad de datos y alarmas | Alarmas que no se programan en algunos casos, estado desactualizado | Bajo–medio |
+| 🔴 Alta | 2. Fiabilidad de datos y alarmas | Actividades que desaparecen al cambiar de idioma, estado desactualizado | Bajo–medio |
 | 🟠 Media | 3. Permisos y experiencia de usuario | Pantalla de ajustes que se abre en cada inicio, alarmas sin permiso | Medio |
 | 🟡 Media | 4. Pruebas automatizadas | Proteger la base de datos, las migraciones y la lógica de fechas | Medio |
 | 🟢 Baja | 5. Estructura y mantenimiento | `DiaScreen` de 1.300 líneas, código de fechas repetido, dependencias | Medio–alto |
@@ -44,7 +44,7 @@ Este documento propone los cambios más importantes para la app, ordenados por p
 ### 2.1 Formato de fechas dependiente del idioma del teléfono
 
 - **Dónde:** 38 usos de `SimpleDateFormat(..., Locale.getDefault())` en las pantallas; el scheduler lee con `Locale.ROOT` (`com/example/agendapersonal/alarm/ActividadAlarmaScheduler.kt:31`).
-- **Problema:** las fechas y horas se **guardan** en Room con el idioma del dispositivo. En idiomas con dígitos no latinos (árabe, persa, hindi…) se guardan cadenas como `٢٠٢٦-١١-١٢`. Luego el scheduler no puede leerlas, la alarma no se programa y el orden `ORDER BY fecha, hora` deja de ser correcto.
+- **Problema:** las fechas y horas se **guardan** en Room con el idioma del dispositivo. En idiomas con dígitos no latinos (árabe, persa, hindi…) se guardan cadenas como `٢٠٢٦-١١-١٢`. Si después el usuario cambia de idioma, las cadenas nuevas (`2026-11-12`) ya no coinciden con las guardadas: la actividad deja de aparecer en Día y Calendario, las eliminaciones por día o por periodo no la encuentran y `ORDER BY fecha, hora` la ordena mal. (La alarma sí suena: el parser del scheduler acepta esos dígitos).
 - **Propuesta:**
   - Crear un archivo `util/Fechas.kt` con funciones únicas para formatear y leer el formato de almacenamiento (`yyyy-MM-dd` y `HH:mm`) usando siempre `Locale.ROOT`, o mejor `java.time` (`LocalDate`/`LocalTime`, disponible con *desugaring* en `minSdk 24`).
   - Usar el idioma del usuario solo para **mostrar** fechas (por ejemplo "12 de noviembre"), nunca para guardarlas.
