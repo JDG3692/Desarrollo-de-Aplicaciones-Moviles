@@ -56,6 +56,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material.icons.filled.Delete
 import android.app.DatePickerDialog
+import com.example.agendapersonal.util.FormatoAlmacenamiento
 
 
 
@@ -118,9 +119,7 @@ fun DiaScreen(
     // Guarda la fecha que el usuario está consultando en la pantalla.
     var fechaConsultada by remember {
         mutableStateOf(
-            SimpleDateFormat(
-                "yyyy-MM-dd", Locale.getDefault()
-            ).format(calendarioActual.time)
+            FormatoAlmacenamiento.fecha().format(calendarioActual.time)
         )
     }
     // Controla si se muestra el aviso cuando se intenta editar una actividad completada.
@@ -129,9 +128,7 @@ fun DiaScreen(
     }
 
     // Obtiene la fecha de hoy para determinar cuándo mostrar las opciones de creación.
-    val fechaHoy = SimpleDateFormat(
-        "yyyy-MM-dd", Locale.getDefault()
-    ).format(Date())
+    val fechaHoy = FormatoAlmacenamiento.fecha().format(Date())
 
     // Observa las actividades almacenadas en Room.
     val actividades by agendaViewModel.actividades.collectAsState()
@@ -201,17 +198,13 @@ fun DiaScreen(
                     val calendario = Calendar.getInstance()
 
                     // Convierte la fecha consultada de texto a un objeto Calendar.
-                    calendario.time = SimpleDateFormat(
-                        "yyyy-MM-dd", Locale.getDefault()
-                    ).parse(fechaConsultada)!!
+                    calendario.time = FormatoAlmacenamiento.fecha().parse(fechaConsultada)!!
 
                     // Retrocede un día en el calendario.
                     calendario.add(Calendar.DAY_OF_MONTH, -1)
 
                     // Guarda nuevamente la fecha consultada en formato yyyy-MM-dd.
-                    fechaConsultada = SimpleDateFormat(
-                        "yyyy-MM-dd", Locale.getDefault()
-                    ).format(calendario.time)
+                    fechaConsultada = FormatoAlmacenamiento.fecha().format(calendario.time)
                 }, modifier = Modifier.width(48.dp)
             ) {
                 Icon(
@@ -233,9 +226,7 @@ fun DiaScreen(
                     text = SimpleDateFormat(
                         "EEEE", Locale("es", "CO")
                     ).format(
-                        SimpleDateFormat(
-                            "yyyy-MM-dd", Locale.getDefault()
-                        ).parse(fechaConsultada)!!
+                        FormatoAlmacenamiento.fecha().parse(fechaConsultada)!!
                     ).uppercase(),
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 14.sp,
@@ -248,9 +239,7 @@ fun DiaScreen(
                     text = SimpleDateFormat(
                         "d 'de' MMMM 'de' yyyy", Locale("es", "CO")
                     ).format(
-                        SimpleDateFormat(
-                            "yyyy-MM-dd", Locale.getDefault()
-                        ).parse(fechaConsultada)!!
+                        FormatoAlmacenamiento.fecha().parse(fechaConsultada)!!
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 14.sp,
@@ -266,17 +255,13 @@ fun DiaScreen(
                     val calendario = Calendar.getInstance()
 
                     // Convierte la fecha consultada de texto a un objeto Calendar.
-                    calendario.time = SimpleDateFormat(
-                        "yyyy-MM-dd", Locale.getDefault()
-                    ).parse(fechaConsultada)!!
+                    calendario.time = FormatoAlmacenamiento.fecha().parse(fechaConsultada)!!
 
                     // Avanza un día en el calendario.
                     calendario.add(Calendar.DAY_OF_MONTH, 1)
 
                     // Guarda nuevamente la fecha consultada en formato yyyy-MM-dd.
-                    fechaConsultada = SimpleDateFormat(
-                        "yyyy-MM-dd", Locale.getDefault()
-                    ).format(calendario.time)
+                    fechaConsultada = FormatoAlmacenamiento.fecha().format(calendario.time)
                 },
                 // Define el ancho del botón de navegación.
                 modifier = Modifier.width(48.dp)
@@ -382,11 +367,7 @@ fun DiaScreen(
 
                         // Solo permite seleccionar la hora actual o una hora futura.
                         if (minutosSeleccionados >= minutosActuales) {
-                            horaTarea = String.format(
-                                "%02d:%02d",
-                                hora,
-                                minuto
-                            )
+                            horaTarea = FormatoAlmacenamiento.formatearHora(hora, minuto)
                         }
 
                         // Cierra el selector de hora.
@@ -413,9 +394,7 @@ fun DiaScreen(
                                 // Guarda el título escrito por el usuario.
                                 titulo = textoTarea,
                                 // Guarda la fecha actual de la actividad.
-                                fecha = SimpleDateFormat(
-                                    "yyyy-MM-dd", Locale.getDefault()
-                                ).format(Date()),
+                                fecha = FormatoAlmacenamiento.fecha().format(Date()),
                                 // Guarda la hora seleccionada.
                                 hora = horaTarea
                             )
@@ -481,9 +460,7 @@ fun DiaScreen(
 
                 // Convierte la fecha de la actividad para comprobar si ya pasó.
                 val fechaActividad = try {
-                    SimpleDateFormat(
-                        "yyyy-MM-dd", Locale.getDefault()
-                    ).parse(actividad.fecha)
+                    FormatoAlmacenamiento.fecha().parse(actividad.fecha)
                 } catch (e: Exception) {
                     null
                 }
@@ -557,9 +534,7 @@ fun DiaScreen(
                                     SimpleDateFormat(
                                         "hh:mm a", Locale.getDefault()
                                     ).format(
-                                        SimpleDateFormat(
-                                            "HH:mm", Locale.getDefault()
-                                        ).parse(actividad.hora)!!
+                                        FormatoAlmacenamiento.hora().parse(actividad.hora)!!
                                     )
                                 } catch (e: Exception) {
                                     actividad.hora
@@ -1000,10 +975,7 @@ fun DiaScreen(
                     // Define el inicio y el final exclusivo del periodo elegido.
                     when (tipoEliminacion) {
                         "dia" -> {
-                            fechaEliminacion = SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault()
-                            ).format(calendarioSeleccionado.time)
+                            fechaEliminacion = FormatoAlmacenamiento.fecha().format(calendarioSeleccionado.time)
 
                             fechaInicioEliminacion = fechaEliminacion
 
@@ -1012,10 +984,7 @@ fun DiaScreen(
                                 1
                             )
 
-                            fechaFinEliminacion = SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault()
-                            ).format(calendarioSeleccionado.time)
+                            fechaFinEliminacion = FormatoAlmacenamiento.fecha().format(calendarioSeleccionado.time)
                         }
 
                         "mes" -> {
@@ -1024,20 +993,14 @@ fun DiaScreen(
                                 1
                             )
 
-                            fechaInicioEliminacion = SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault()
-                            ).format(calendarioSeleccionado.time)
+                            fechaInicioEliminacion = FormatoAlmacenamiento.fecha().format(calendarioSeleccionado.time)
 
                             calendarioSeleccionado.add(
                                 Calendar.MONTH,
                                 1
                             )
 
-                            fechaFinEliminacion = SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault()
-                            ).format(calendarioSeleccionado.time)
+                            fechaFinEliminacion = FormatoAlmacenamiento.fecha().format(calendarioSeleccionado.time)
                         }
 
                         "anio" -> {
@@ -1050,20 +1013,14 @@ fun DiaScreen(
                                 1
                             )
 
-                            fechaInicioEliminacion = SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault()
-                            ).format(calendarioSeleccionado.time)
+                            fechaInicioEliminacion = FormatoAlmacenamiento.fecha().format(calendarioSeleccionado.time)
 
                             calendarioSeleccionado.add(
                                 Calendar.YEAR,
                                 1
                             )
 
-                            fechaFinEliminacion = SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault()
-                            ).format(calendarioSeleccionado.time)
+                            fechaFinEliminacion = FormatoAlmacenamiento.fecha().format(calendarioSeleccionado.time)
                         }
                     }
 
@@ -1155,10 +1112,7 @@ fun DiaScreen(
 
             val cantidadActividades = actividadesDelPeriodo.size
 
-            val inicioPeriodo = SimpleDateFormat(
-                "yyyy-MM-dd",
-                Locale.getDefault()
-            ).parse(fechaInicioEliminacion)!!
+            val inicioPeriodo = FormatoAlmacenamiento.fecha().parse(fechaInicioEliminacion)!!
 
             val descripcionPeriodo = when (tipoEliminacion) {
                 "mes" -> SimpleDateFormat(

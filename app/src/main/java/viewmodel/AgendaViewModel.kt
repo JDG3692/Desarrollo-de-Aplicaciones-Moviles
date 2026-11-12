@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.example.agendapersonal.alarm.ActividadAlarmaReceiver
 import com.example.agendapersonal.alarm.ActividadAlarmaScheduler
 
 // ViewModel principal de la agenda.
@@ -56,8 +57,9 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
     // Marca como completada una actividad identificada por su ID.
     fun completarActividad(id: Int) {
         viewModelScope.launch {
-            // Busca la actividad dentro de la lista disponible.
-            val actividad = actividades.value.find { it.id == id }
+            // Consulta Room directamente: actividades.value puede estar vacío
+            // o desactualizado cuando nadie observa la lista.
+            val actividad = actividadDao.obtenerActividadPorId(id)
 
             // Actualiza la actividad únicamente si fue encontrada.
             if (actividad != null) {
@@ -67,6 +69,7 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
 
                 // Cancela la alarma de la actividad completada.
                 alarmaScheduler.cancelar(id)
+                descartarNotificacion(id)
             }
         }
     }
@@ -74,8 +77,8 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
     // Activa o silencia la alarma de una actividad.
     fun cambiarEstadoAlarma(id: Int) {
         viewModelScope.launch {
-            // Busca la actividad por su identificador.
-            val actividad = actividades.value.find { it.id == id }
+            // Consulta Room directamente para trabajar con el último estado guardado.
+            val actividad = actividadDao.obtenerActividadPorId(id)
 
             // Continúa únicamente si la actividad existe.
             if (actividad != null) {
@@ -106,6 +109,10 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             } else {
                 alarmaScheduler.cancelar(actividad.id)
             }
+
+            // Si la actividad se editó desde "Reprogramar", su notificación
+            // anterior ya no aplica: la nueva alarma generará otra.
+            descartarNotificacion(actividad.id)
         }
     }
 
@@ -115,6 +122,7 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             // Cancela la alarma asociada a la actividad.
             alarmaScheduler.cancelar(actividad.id)
+            descartarNotificacion(actividad.id)
 
             // Elimina la actividad de la base de datos.
             actividadDao.eliminarActividad(actividad)
@@ -133,6 +141,7 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             // Cancela cada alarma antes de eliminar los registros.
             actividadesCompletadas.forEach { actividad ->
                 alarmaScheduler.cancelar(actividad.id)
+                descartarNotificacion(actividad.id)
             }
 
             // Elimina las actividades completadas de Room.
@@ -150,6 +159,7 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             // Cancela todas las alarmas asociadas.
             actividadesDelDia.forEach { actividad ->
                 alarmaScheduler.cancelar(actividad.id)
+                descartarNotificacion(actividad.id)
             }
 
             // Elimina las actividades del día de Room.
@@ -176,6 +186,7 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
             // Cancela todas las alarmas de los registros afectados.
             actividadesDelRango.forEach { actividad ->
                 alarmaScheduler.cancelar(actividad.id)
+                descartarNotificacion(actividad.id)
             }
 
             // Elimina los registros del rango de Room.
@@ -184,6 +195,14 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
                 fechaFin
             )
         }
+    }
+
+    // Quita la notificación fija de una actividad, si está visible.
+    private fun descartarNotificacion(actividadId: Int) {
+        ActividadAlarmaReceiver.descartarNotificacion(
+            getApplication<Application>(),
+            actividadId
+        )
     }
 
 }

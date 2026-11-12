@@ -17,6 +17,7 @@ import com.example.agendapersonal.ui.theme.AgendaPersonalTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.example.agendapersonal.alarm.ActividadAlarmaReceiver
 import com.example.agendapersonal.alarm.ActividadAlarmaSonidoService
 
 class MainActivity : ComponentActivity() {
@@ -32,19 +33,29 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        detenerAlarmaPersonalizada(intent)
 
+        // Al recrearse la Activity (rotación, cambio de tema, etc.) Android
+        // entrega de nuevo el intent original con sus extras. Solo se procesa
+        // la primera vez para no reabrir la edición ni detener otra alarma.
+        // También se ignora si la app se abrió desde la lista de recientes.
+        val esIntentNuevo = savedInstanceState == null &&
+                (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0
+
+        if (esIntentNuevo) {
+            procesarIntentDeNotificacion(intent)
+        }
 
         solicitarPermisos()
-
-        actividadIdPendiente =
-            intent.getIntExtra("abrir_actividad_id", 0)
-                .takeIf { it > 0 }
 
         setContent {
             AgendaPersonalTheme {
                 AppNavigation(
-                    actividadIdParaEditar = actividadIdPendiente
+                    actividadIdParaEditar = actividadIdPendiente,
+                    onActividadAbierta = {
+                        // Permite que una nueva notificación de la misma
+                        // actividad vuelva a abrir la edición.
+                        actividadIdPendiente = null
+                    }
                 )
             }
         }
@@ -53,11 +64,20 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        procesarIntentDeNotificacion(intent)
+    }
+
+    // Atiende los extras que envía la notificación de una actividad:
+    // detiene el sonido personalizado y abre la edición. Los extras se
+    // eliminan después de usarlos para no procesarlos dos veces.
+    private fun procesarIntentDeNotificacion(intent: Intent) {
         detenerAlarmaPersonalizada(intent)
 
         val actividadId = intent
-            .getIntExtra("abrir_actividad_id", 0)
+            .getIntExtra(ActividadAlarmaReceiver.EXTRA_ABRIR_ACTIVIDAD_ID, 0)
             .takeIf { it > 0 }
+
+        intent.removeExtra(ActividadAlarmaReceiver.EXTRA_ABRIR_ACTIVIDAD_ID)
 
         if (actividadId != null) {
             actividadIdPendiente = actividadId
@@ -82,16 +102,9 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun detenerAlarmaPersonalizada(intent: Intent?) {
-        if (intent?.getBooleanExtra("detener_alarma_personalizada", false) == true) {
-            val intentServicio = Intent(
-                this,
-                ActividadAlarmaSonidoService::class.java
-            ).apply {
-                action = ActividadAlarmaSonidoService.ACCION_DETENER
-            }
-
-            startService(intentServicio)
-            intent.removeExtra("detener_alarma_personalizada")
+        if (intent?.getBooleanExtra(ActividadAlarmaReceiver.EXTRA_DETENER_ALARMA, false) == true) {
+            ActividadAlarmaSonidoService.detener(this)
+            intent.removeExtra(ActividadAlarmaReceiver.EXTRA_DETENER_ALARMA)
         }
     }
 
