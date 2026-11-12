@@ -83,8 +83,8 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
             context,
             MainActivity::class.java
         ).apply {
-            putExtra("abrir_actividad_id", actividadId)
-            putExtra("detener_alarma_personalizada", true)
+            putExtra(EXTRA_ABRIR_ACTIVIDAD_ID, actividadId)
+            putExtra(EXTRA_DETENER_ALARMA, true)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or
                     Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
@@ -137,6 +137,9 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
             .setAutoCancel(false)
             .setOngoing(true)
             .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+            // Tocar la notificación abre la edición de la actividad,
+            // igual que el botón "Reprogramar".
+            .setContentIntent(pendingIntentReprogramar)
             .addAction(accionCompletar)
             .addAction(accionReprogramar)
             .addAction(accionNoCompletar)
@@ -168,5 +171,18 @@ class ActividadAlarmaReceiver : BroadcastReceiver() {
         const val EXTRA_TITULO = "actividad_titulo"
         const val CHANNEL_ID = "alarmas_actividades"
         const val EXTRA_ALARMA_ACTIVA = "alarma_activa"
+        const val EXTRA_ABRIR_ACTIVIDAD_ID = "abrir_actividad_id"
+        const val EXTRA_DETENER_ALARMA = "detener_alarma_personalizada"
+
+        // Quita la notificación de una actividad. Se usa cuando la actividad
+        // se completa, se edita o se elimina, porque la notificación es fija
+        // (setOngoing) y el usuario no puede descartarla deslizando.
+        fun descartarNotificacion(context: Context, actividadId: Int) {
+            val notificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE)
+                        as NotificationManager
+
+            notificationManager.cancel(actividadId)
+        }
     }
 }

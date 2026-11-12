@@ -1,7 +1,6 @@
 
 package com.example.agendapersonal.alarm
 
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -23,10 +22,6 @@ class ActividadAlarmaAccionReceiver : BroadcastReceiver() {
         when (intent.action) {
             ACCION_COMPLETAR -> {
                 completarActividad(context, actividadId)
-            }
-
-            ACCION_REPROGRAMAR -> {
-                // Lo conectaremos después.
             }
 
             ACCION_NO_COMPLETAR -> {
@@ -69,12 +64,10 @@ class ActividadAlarmaAccionReceiver : BroadcastReceiver() {
                         .cancelar(actividadId)
                 }
 
-                val notificationManager =
-                    context.getSystemService(
-                        Context.NOTIFICATION_SERVICE
-                    ) as NotificationManager
-
-                notificationManager.cancel(actividadId)
+                ActividadAlarmaReceiver.descartarNotificacion(
+                    context,
+                    actividadId
+                )
             } finally {
                 resultado.finish()
             }
@@ -108,12 +101,10 @@ class ActividadAlarmaAccionReceiver : BroadcastReceiver() {
                         .cancelar(actividadId)
                 }
 
-                val notificationManager =
-                    context.getSystemService(
-                        Context.NOTIFICATION_SERVICE
-                    ) as NotificationManager
-
-                notificationManager.cancel(actividadId)
+                ActividadAlarmaReceiver.descartarNotificacion(
+                    context,
+                    actividadId
+                )
             } finally {
                 resultado.finish()
             }
@@ -123,9 +114,6 @@ class ActividadAlarmaAccionReceiver : BroadcastReceiver() {
     companion object {
         const val ACCION_COMPLETAR =
             "com.example.agendapersonal.ACCION_COMPLETAR"
-
-        const val ACCION_REPROGRAMAR =
-            "com.example.agendapersonal.ACCION_REPROGRAMAR"
 
         const val ACCION_NO_COMPLETAR =
             "com.example.agendapersonal.ACCION_NO_COMPLETAR"

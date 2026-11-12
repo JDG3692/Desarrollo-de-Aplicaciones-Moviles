@@ -13,7 +13,8 @@ import com.example.agendapersonal.ui.screens.EditarActividadScreen
 
 @Composable
 fun AppNavigation(
-    actividadIdParaEditar: Int? = null
+    actividadIdParaEditar: Int? = null,
+    onActividadAbierta: () -> Unit = {}
 ) {
     val navController = rememberNavController()
 
@@ -23,6 +24,9 @@ fun AppNavigation(
             navController.navigate("editar/$actividadIdParaEditar") {
                 launchSingleTop = true
             }
+
+            // Marca el ID como atendido para no volver a navegar con él.
+            onActividadAbierta()
         }
     }
 
