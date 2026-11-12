@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.filled.ArrowBack
+import com.example.agendapersonal.util.FormatoAlmacenamiento
 
 // Pantalla utilizada para programar una actividad en una fecha y hora específicas.
 // Recibe el ViewModel para guardar la actividad y una función para regresar
@@ -172,10 +173,7 @@ fun ProgramarActividadScreen(
                         }
 
                         // Guarda la fecha seleccionada en formato yyyy-MM-dd.
-                        fechaTarea = SimpleDateFormat(
-                            "yyyy-MM-dd",
-                            Locale.getDefault()
-                        ).format(
+                        fechaTarea = FormatoAlmacenamiento.fecha().format(
                             fechaSeleccionada.time
                         )
                     },
@@ -220,10 +218,7 @@ fun ProgramarActividadScreen(
                             "dd/MM/yyyy",
                             Locale.getDefault()
                         ).format(
-                            SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault()
-                            ).parse(fechaTarea)!!
+                            FormatoAlmacenamiento.fecha().parse(fechaTarea)!!
                         )
                     }
                 )
@@ -257,11 +252,7 @@ fun ProgramarActividadScreen(
                     contexto,
                     { _, hora, minuto ->
                         // Guarda la hora seleccionada en formato HH:mm.
-                        horaTarea = String.format(
-                            "%02d:%02d",
-                            hora,
-                            minuto
-                        )
+                        horaTarea = FormatoAlmacenamiento.formatearHora(hora, minuto)
                     },
                     // Utiliza la hora actual como referencia inicial.
                     calendario.get(Calendar.HOUR_OF_DAY),
@@ -298,10 +289,7 @@ fun ProgramarActividadScreen(
                             "hh:mm a",
                             Locale.getDefault()
                         ).format(
-                            SimpleDateFormat(
-                                "HH:mm",
-                                Locale.getDefault()
-                            ).parse(horaTarea)!!
+                            FormatoAlmacenamiento.hora().parse(horaTarea)!!
                         )
                     }
                 )

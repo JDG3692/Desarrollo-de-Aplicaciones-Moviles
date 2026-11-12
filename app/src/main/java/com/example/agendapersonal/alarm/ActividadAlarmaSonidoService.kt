@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.media.MediaPlayer
@@ -208,6 +209,15 @@ class ActividadAlarmaSonidoService : Service() {
     }
 
     private fun detenerServicio() {
+        liberarRecursos()
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
+    }
+
+    // Cancela el inicio pendiente, libera el reproductor y abandona el foco
+    // de audio. Se llama también desde onDestroy, porque stopService()
+    // destruye el servicio sin pasar por detenerServicio().
+    private fun liberarRecursos() {
         // Cancelar el inicio pendiente del MP3, si todavía no ha comenzado.
         inicioSonidoPendiente?.let {
             handler.removeCallbacks(it)
@@ -233,13 +243,10 @@ class ActividadAlarmaSonidoService : Service() {
             }
         }
 
-        stopForeground(STOP_FOREGROUND_REMOVE)
-        stopSelf()
     }
 
     override fun onDestroy() {
-        mediaPlayer?.release()
-        mediaPlayer = null
+        liberarRecursos()
         super.onDestroy()
     }
 
@@ -252,5 +259,15 @@ class ActividadAlarmaSonidoService : Service() {
         const val ACCION_DETENER =
             "com.example.agendapersonal.ACCION_DETENER_ALARMA"
         const val TAG = "AgendaAlarmaSonido"
+
+        // Detiene el sonido personalizado si se está reproduciendo.
+        // stopService() no arranca el servicio cuando no está activo, a
+        // diferencia de startService(), que desde segundo plano puede lanzar
+        // IllegalStateException en Android 8 o superior.
+        fun detener(context: Context) {
+            context.stopService(
+                Intent(context, ActividadAlarmaSonidoService::class.java)
+            )
+        }
     }
 }

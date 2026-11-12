@@ -57,8 +57,9 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
     // Marca como completada una actividad identificada por su ID.
     fun completarActividad(id: Int) {
         viewModelScope.launch {
-            // Busca la actividad dentro de la lista disponible.
-            val actividad = actividades.value.find { it.id == id }
+            // Consulta Room directamente: actividades.value puede estar vacío
+            // o desactualizado cuando nadie observa la lista.
+            val actividad = actividadDao.obtenerActividadPorId(id)
 
             // Actualiza la actividad únicamente si fue encontrada.
             if (actividad != null) {
@@ -76,8 +77,8 @@ class AgendaViewModel(application: Application) : AndroidViewModel(application) 
     // Activa o silencia la alarma de una actividad.
     fun cambiarEstadoAlarma(id: Int) {
         viewModelScope.launch {
-            // Busca la actividad por su identificador.
-            val actividad = actividades.value.find { it.id == id }
+            // Consulta Room directamente para trabajar con el último estado guardado.
+            val actividad = actividadDao.obtenerActividadPorId(id)
 
             // Continúa únicamente si la actividad existe.
             if (actividad != null) {

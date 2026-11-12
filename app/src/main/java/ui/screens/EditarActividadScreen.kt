@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import com.example.agendapersonal.util.FormatoAlmacenamiento
 
 
 // Pantalla encargada de editar una actividad existente.
@@ -163,10 +164,7 @@ fun EditarActividadScreen(
                 // Convierte la fecha actual de la actividad para usarla inicialmente
                 // en el selector.
                 val fechaInicial = try {
-                    SimpleDateFormat(
-                        "yyyy-MM-dd",
-                        Locale.getDefault()
-                    ).parse(fecha)
+                    FormatoAlmacenamiento.fecha().parse(fecha)
                 } catch (e: Exception) {
                     null
                 }
@@ -196,10 +194,7 @@ fun EditarActividadScreen(
                             set(Calendar.MILLISECOND, 0)
                         }
 
-                        fecha = SimpleDateFormat(
-                            "yyyy-MM-dd",
-                            Locale.getDefault()
-                        ).format(fechaSeleccionada.time)
+                        fecha = FormatoAlmacenamiento.fecha().format(fechaSeleccionada.time)
                     },
                     calendarioInicial.get(Calendar.YEAR),
                     calendarioInicial.get(Calendar.MONTH),
@@ -233,10 +228,7 @@ fun EditarActividadScreen(
                             "dd/MM/yyyy",
                             Locale.getDefault()
                         ).format(
-                            SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault()
-                            ).parse(fecha)!!
+                            FormatoAlmacenamiento.fecha().parse(fecha)!!
                         )
                     } catch (e: Exception) {
                         fecha
@@ -252,10 +244,7 @@ fun EditarActividadScreen(
             onClick = {
                 // Obtiene la fecha actual seleccionada en la actividad.
                 val fechaActividad = try {
-                    SimpleDateFormat(
-                        "yyyy-MM-dd",
-                        Locale.getDefault()
-                    ).parse(fecha)
+                    FormatoAlmacenamiento.fecha().parse(fecha)
                 } catch (e: Exception) {
                     null
                 }
@@ -278,10 +267,7 @@ fun EditarActividadScreen(
 
                 // Convierte la hora guardada de la actividad para mostrarla inicialmente.
                 val horaInicial = try {
-                    SimpleDateFormat(
-                        "HH:mm",
-                        Locale.getDefault()
-                    ).parse(hora)
+                    FormatoAlmacenamiento.hora().parse(hora)
                 } catch (e: Exception) {
                     null
                 }
@@ -312,20 +298,12 @@ fun EditarActividadScreen(
 
                             // Solo acepta horas iguales o posteriores a la actual.
                             if (minutosSeleccionados >= minutosActuales) {
-                                hora = String.format(
-                                    "%02d:%02d",
-                                    horaSeleccionada,
-                                    minutoSeleccionado
-                                )
+                                hora = FormatoAlmacenamiento.formatearHora(horaSeleccionada, minutoSeleccionado)
                             }
                         } else {
 
                             // Para fechas futuras se permite cualquier hora.
-                            hora = String.format(
-                                "%02d:%02d",
-                                horaSeleccionada,
-                                minutoSeleccionado
-                            )
+                            hora = FormatoAlmacenamiento.formatearHora(horaSeleccionada, minutoSeleccionado)
                         }
                     },
                     calendarioInicial.get(Calendar.HOUR_OF_DAY),
@@ -355,10 +333,7 @@ fun EditarActividadScreen(
                             "hh:mm a",
                             Locale.getDefault()
                         ).format(
-                            SimpleDateFormat(
-                                "HH:mm",
-                                Locale.getDefault()
-                            ).parse(hora)!!
+                            FormatoAlmacenamiento.hora().parse(hora)!!
                         )
                     } catch (e: Exception) {
                         hora
@@ -374,10 +349,7 @@ fun EditarActividadScreen(
             onClick = {
                 // Convierte la fecha seleccionada a un objeto Calendar.
                 val fechaSeleccionada = try {
-                    SimpleDateFormat(
-                        "yyyy-MM-dd",
-                        Locale.getDefault()
-                    ).parse(fecha)
+                    FormatoAlmacenamiento.fecha().parse(fecha)
                 } catch (e: Exception) {
                     null
                 }

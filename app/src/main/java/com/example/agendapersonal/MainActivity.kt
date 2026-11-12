@@ -103,14 +103,7 @@ class MainActivity : ComponentActivity() {
 
     private fun detenerAlarmaPersonalizada(intent: Intent?) {
         if (intent?.getBooleanExtra(ActividadAlarmaReceiver.EXTRA_DETENER_ALARMA, false) == true) {
-            val intentServicio = Intent(
-                this,
-                ActividadAlarmaSonidoService::class.java
-            ).apply {
-                action = ActividadAlarmaSonidoService.ACCION_DETENER
-            }
-
-            startService(intentServicio)
+            ActividadAlarmaSonidoService.detener(this)
             intent.removeExtra(ActividadAlarmaReceiver.EXTRA_DETENER_ALARMA)
         }
     }

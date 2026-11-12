@@ -52,6 +52,7 @@ import java.util.Date
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import com.example.agendapersonal.util.FormatoAlmacenamiento
 
 
 @Composable
@@ -289,10 +290,7 @@ fun CalendarioScreen(
                                     }
 
                                 // Convierte la fecha al formato utilizado por Room.
-                                val fechaFormateada = SimpleDateFormat(
-                                    "yyyy-MM-dd",
-                                    Locale.getDefault()
-                                ).format(fechaDia.time)
+                                val fechaFormateada = FormatoAlmacenamiento.fecha().format(fechaDia.time)
 
                                 // Comprueba si el día tiene actividades.
                                 val tieneActividades =
@@ -399,10 +397,7 @@ fun CalendarioScreen(
         )
 
         // Convierte la fecha seleccionada al formato utilizado por Room.
-        val fechaSeleccionadaFormateada = SimpleDateFormat(
-            "yyyy-MM-dd",
-            Locale.getDefault()
-        ).format(fechaSeleccionada.time)
+        val fechaSeleccionadaFormateada = FormatoAlmacenamiento.fecha().format(fechaSeleccionada.time)
 
         // Obtiene solamente las actividades del día seleccionado.
         val actividadesDelDia = actividades
@@ -450,10 +445,7 @@ fun CalendarioScreen(
                         // Convierte la fecha de la actividad para comprobar si ya pasó.
                         // La comparación se realiza solamente por fecha, no por hora.
                         val fechaActividad = try {
-                            SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault()
-                            ).parse(actividad.fecha)
+                            FormatoAlmacenamiento.fecha().parse(actividad.fecha)
                         } catch (e: Exception) {
                             null
                         }
@@ -538,10 +530,7 @@ fun CalendarioScreen(
                                                 "hh:mm a",
                                                 Locale.getDefault()
                                             ).format(
-                                                SimpleDateFormat(
-                                                    "HH:mm",
-                                                    Locale.getDefault()
-                                                ).parse(actividad.hora)!!
+                                                FormatoAlmacenamiento.hora().parse(actividad.hora)!!
                                             )
                                         } catch (e: Exception) {
                                             actividad.hora

@@ -30,14 +30,7 @@ class ActividadAlarmaAccionReceiver : BroadcastReceiver() {
         }
     }
     private fun detenerSonido(context: Context) {
-        val intent = Intent(
-            context,
-            ActividadAlarmaSonidoService::class.java
-        ).apply {
-            action = ActividadAlarmaSonidoService.ACCION_DETENER
-        }
-
-        context.startService(intent)
+        ActividadAlarmaSonidoService.detener(context)
     }
 
     private fun completarActividad(
