@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 @Database(
     entities = [Actividad::class],
     version = 3,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class AgendaDatabase : RoomDatabase() {
 
